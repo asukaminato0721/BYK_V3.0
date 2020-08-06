@@ -1,1 +1,5 @@
 __pycache__/
+config.json
+temp/ups.csv
+temp/data-raw.csv
+temp/data_yuedu.csv
