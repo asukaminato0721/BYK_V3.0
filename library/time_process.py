@@ -57,7 +57,7 @@ def time_str_list(t_start: str, t_end: str, interval=12):
     return ret
 
 
-def smart_choice_time(time_=None):
+def smart_choice_time(time_= None):
     """
     给出当前时间点上最后生成文件的时间
     :return:最后生成文件的时间
@@ -78,12 +78,12 @@ def smart_choice_time(time_=None):
     else:
         u_now = str2unix(time_)
     # 前推 4 小时，任何4小时前没有开始的数据都应该没出来
-    process_time = 3600 * 6
+    process_time =3600*6
     # 偏置 3 小时 测试结果别问我为啥
-    phase = 3600 * 3
+    phase =3600*3
     #  周期 12 小时
-    cycle = 3600 * 12
-    allowed = u_now - process_time - phase
+    cycle = 3600*12
+    allowed = u_now - process_time-phase
     # 去掉尾数
     u_format = allowed // cycle * cycle
     u_ret = u_format + phase

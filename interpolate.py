@@ -46,7 +46,7 @@ def table_interpolate(data, fan_mode="gain"):
     # 感觉这个用法不是很安全，如果出现了问题就用上一行的。
     ret_head = [head[0]] + sorted(head[1:] * 5) + [head[-1]] * 5
     ret_body = [row_interpolate(_, fan_mode) for _ in body]
-    ret = [ret_head] + ret_body
+    ret = [ret_head]+ret_body
     return ret
 
 
@@ -55,6 +55,6 @@ if __name__ == "__main__":
             140217, 35482, 19197, 10604, 8414, 3979, 3582, 2624, 1309, 1444, 1824, 2293, 2186, 1421, 1099, 667, 612,
             558, 574, 1045, 1428, 1423, 1111, 787, 783, 767, 646, 381, 348, 316, 305, 281, 323, 347, 291, 259, 256, 239,
             291, 183725.5]
-    ret = row_interpolate(line, fan_mode="gain")
+    ret = row_interpolate(line,fan_mode="gain")
     print(ret)
     pass

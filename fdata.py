@@ -10,7 +10,7 @@ from library.file import log
 
 url_template = "https://api.bilibili.com/x/article/archives?ids="
 out_file = r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\amine\fdata.csv"
-# out_file = "fdata.csv"
+out_file = "fdata.csv"
 
 
 # 目标观看量：10万

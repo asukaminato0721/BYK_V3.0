@@ -7,13 +7,17 @@ import time
 from library.file import replaceAll, log, stime2filename, fast_import
 from library.time_process import time_str_list, str2tuple
 
-pre = r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\"
+pre = "C:\\Users\\sa\\Downloads\\BiliServ\\"
 if __name__ == "__main__":
     pass
 
 week_eng2chs = {"Mon": "周一", "Tue": "周二", "Wed": "周三", "Thu": "周四", "Fri": "周五",
                 "Sat": "周六", "Sun": "周日", "11时": "日", "23时": "夜"}
-eng2chs_rule = lambda date: replaceAll(time.strftime("%Y年%m月%d日（%a）", str2tuple(date)), week_eng2chs)
+# eng2chs_rule = lambda date: replaceAll(time.strftime("%Y年%m月%d日（%a）", str2tuple(date)), week_eng2chs)
+def eng2chs_rule(date,lenstr="yyyy年mm月dd日（周x）"):
+    s1 = time.strftime("%Y年%m月%d日（%a）%H时".encode('unicode_escape').decode('utf8'),str2tuple(date)).encode('utf-8').decode('unicode_escape')
+    s = replaceAll(s1, week_eng2chs)
+    return s[:min(len(lenstr),len(s))]
 
 
 def dailydata(date, ups, target="fan"):
