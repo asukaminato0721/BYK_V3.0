@@ -30,7 +30,7 @@ blacklist = ["吴织亚切大忽悠"]
 def download_header(uid, face_link):
     command = fr"wolframscript -file headpic.wls {uid} {face_link}"
     with os.popen(command, 'r') as f:
-        color = f.read()
+        color = f.read().replace("\n","")
     if uid in good_color:
         color = good_color[uid]
     return color
