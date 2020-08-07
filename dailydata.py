@@ -29,7 +29,7 @@ def dailydata(date, ups, target="fan"):
     cha_file = pre + stime2filename(date, "cha")
     cha_data = fast_import(cha_file)[1:]
     # uid0 名字1 粉丝量3 视频数4 视频播放5 关注数7 专栏阅读8 等级9 充电10 点赞11，从零开始
-    ups_data = {i[0]: int(i[3]) if i[0] in ups or int(i[0]) in ups else None for i in cha_data}
+    ups_data = {i[0]: int(i[3]) for i in cha_data if (i[0] in ups or int(i[0]) in ups)}
     return ups_data
     # return {ups: None for ups in ups}
 
@@ -63,8 +63,8 @@ def daysdata(t_start: str, t_end: str, m_end: str, ups: list, fan_mode="gain"):
         for date in month_day_list:
             try:
                 # 实际增长是半天的，要除以二
-                month_data[up] += data[date][up] // 2
-            except TypeError:
+                month_data[up] += data[date].get(up, None) // 2
+            except (TypeError, KeyError):
                 # 说明取到的是None，当天没有数据
                 error_ups.add(up)
 
@@ -75,7 +75,7 @@ def daysdata(t_start: str, t_end: str, m_end: str, ups: list, fan_mode="gain"):
         # for day in month_day_list:
         #     if data[day][errup] is None:
         #         lost_days.append(day)
-        lost_days = [day for day in month_day_list if data[day][errup] is None]
+        lost_days = [day for day in month_day_list if errup not in data[day]]
         print(f"合计{len(lost_days)}个半天,如下：\n", lost_days)
 
     # 取得本月余下数据
@@ -95,7 +95,7 @@ def daysdata(t_start: str, t_end: str, m_end: str, ups: list, fan_mode="gain"):
     ret_head = [[".png"] + day_names + ["月度净" + ("涨粉" if fan_mode == "gain" else "掉粉")]]
 
     # 表体，每个up一行，相当于最后输出的一列。
-    ret_body = [[up] + [data[day_name_key][up] for day_name_key in day_name_keys] + [month_data[up]] for up in
+    ret_body = [[up] + [data[day_name_key].get(up, 0) for day_name_key in day_name_keys] + [month_data[up]] for up in
                 sorted_ups]
     ret = ret_head + ret_body
     return ret

@@ -71,7 +71,7 @@ log("头像信息获取成功")
 
 # generate config.csv
 log("开始生成config.csv")
-cfg.generate_config(config.gainlost(), 0 if config.gainlost() == "gain" else len(ups))
+cfg.generate_config(config.gainlost(), 0 if config.gainlost() == "gain" else config.month(), len(ups))
 log("config.csv生成成功")
 
 # ending
