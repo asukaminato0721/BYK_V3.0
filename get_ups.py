@@ -26,7 +26,7 @@ def select_from_files(start, end, gainlost, cha_dir):
     # debug = True
     # if debug:
     #     filenames = time_str_list(t_start, "2020080411")
-    file_data = [fast_import(stime2filename(ftime, "cha_server", dir_prefix=cha_dir)) for ftime in filenames]
+    file_data = [fast_import(stime2filename(ftime, "cha", dir_prefix=cha_dir)) for ftime in filenames]
     # ups =reduce(lambda x, y:x|y,[select_from_a_file(file, top_count=top_count) for file in file_data])
     ups = set.union(*[select_from_a_file(file, top_count=top_count) for file in file_data])
     fast_export([ups], "temp/ups.csv", "csv")
