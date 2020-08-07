@@ -82,7 +82,7 @@ def headpic(inter_data):
     """
     # 表头
     head = inter_data[0]
-    ret_head = [head, "", ""] + head[1:]
+    ret_head = [head[0], "", ""] + head[1:]
     ret_body = [crawl(up_data) for up_data in inter_data[1:]]
     # transpose
     ret = zip(ret_head, *ret_body)

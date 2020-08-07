@@ -25,6 +25,7 @@ def row_interpolate(row, fan_mode):
     :param fan_mode:
     :return:
     """
+    # 去除第一个行号和最后一个月度值
     data = [int(_) if _ != "" else 0 for _ in row[1:-1]]
 
     x_cood = range(len(data))
@@ -35,7 +36,8 @@ def row_interpolate(row, fan_mode):
     ret_body = pre_ret + [data[-1]] * 5 + [row[-1]] * 10
     if fan_mode == "lost":
         ret_body = [0 if _ > 0 else _ for _ in ret_body]
-    return [row[0]] + ret_body
+    ret = [row[0]] + ret_body
+    return ret
 
 
 def table_interpolate(data, fan_mode="gain"):
