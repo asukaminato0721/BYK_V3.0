@@ -81,7 +81,7 @@ def stime2filename(file_time: str, file_type: str, dir_prefix: str = "", ext: st
     """
     # fan文件特殊处理
     if file_type == "fan":
-        fan_dir = dir_prefix + "fans\\"
+        fan_dir = os.path.join(dir_prefix, "fans\\")
         is_legal = lambda f: isfile(fan_dir + f) and re.match(rf"^fans{file_time}.*\.csv", f)
         legal_files = [f for f in listdir(fan_dir) if is_legal(f)]
         if not legal_files:
