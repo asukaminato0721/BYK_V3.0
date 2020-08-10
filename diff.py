@@ -58,9 +58,9 @@ def diff(t_start, t_end, target_dir):
     """
     给定起止时间，每半天计算一个差文件
 
-    :thisday t_start: 开始时间
-    :thisday t_end: 结束时间
-    :thisday target_dir: 输出路径
+    :thisday t_start: 开始时间，字符串格式
+    :thisday t_end: 结束时间，字符串格式
+    :thisday target_dir: 输出路径，cha文件夹的上级目录
     :return:
     """
     print(f"正在做差：\n\t起始时间：{t_start}\n\t终止时间：{t_end}\n\t输出目录：{target_dir}")
@@ -83,7 +83,7 @@ def diff(t_start, t_end, target_dir):
 
 
 if __name__ == "__main__":
-    diff("2020073011", "2020080611", r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\")
+    diff("2020080611", "2020080611", r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\")
 
     import time
 
