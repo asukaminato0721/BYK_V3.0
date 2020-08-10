@@ -79,7 +79,7 @@ def stime2filename(file_time: str, file_type: str, dir_prefix: str = "", ext: st
     stime2filename(2020070411,"fan") -> fans\fans2020070411.csv
 
     file_time: 时间前缀，数字字符串。
-    file_type: 目标的文件类型（fan，cha，或cha_server）。
+    file_type: 目标的文件类型（fan，cha，或 cha_server）。
     config_dir: 默认的文件定位地址，默认为本文件目录。
     ext: 文件后缀名。默认为csv。
     """
@@ -89,7 +89,7 @@ def stime2filename(file_time: str, file_type: str, dir_prefix: str = "", ext: st
         is_legal = lambda f: isfile(fan_dir + f) and re.match(rf"^fans{file_time}.*\.csv", f)
         legal_files = [f for f in listdir(fan_dir) if is_legal(f)]
         if not legal_files:
-            raise FileNotFoundError(dir_prefix + f"fans{file_time}*.csv not exist.")
+            raise FileNotFoundError(fan_dir + f"fans{file_time}*.csv not exist.")
         file2size_dict = {f: os.stat(fan_dir + f).st_size for f in legal_files}
         ret = max(file2size_dict, key=file2size_dict.get)
         # 小文件也视作异常
