@@ -12,9 +12,11 @@ from diff import diff
 from headpic import headpic
 from library.file import fast_export, log
 
-default_absolute_dir = r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake"
-config_dir = "D:\\OneDrive\\LiWorkshop\\BYK_V3.0\\"
-cha_dir = os.path.join(default_absolute_dir, "temp")
+import paths
+default_absolute_dir = paths.serv
+config_dir = paths.byk
+cha_dir = paths.serv
+
 ups_dir = "temp/ups.csv"
 raw_dir = "temp/data_raw"
 inter_dir = "temp/data_yuedu.csv"

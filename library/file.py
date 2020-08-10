@@ -35,7 +35,7 @@ def fast_import(file_name: str, ext="csv"):
     :return: 文件内容。
     """
     try:
-        with open(file_name, "r")as f:
+        with open(file_name, "r", encoding='UTF-8')as f:
             # 本来可以用
             if ext == "csv":
                 ret = list(csv.reader(f))
@@ -62,11 +62,15 @@ def fast_export(data, file_name, ext="csv"):
     :param file_name:
     :return: file_name
     """
-    with open(file_name, "w+", newline="")as f:
+    with open(file_name, "w+", newline="", encoding='UTF-8')as f:
         action = {"csv": "csv.writer(f).writerows(data)",
                   "json": "json.dump(data, f)"}
         exec(action.get(ext))
     return file_name
+
+
+def filename2itime(file_name: str):
+    return("20"+re.findall(r'20(\d{8})\.csv',file_name)[0])
 
 
 def stime2filename(file_time: str, file_type: str, dir_prefix: str = "", ext: str = ".csv"):
@@ -96,7 +100,7 @@ def stime2filename(file_time: str, file_type: str, dir_prefix: str = "", ext: st
 
     filename = {"fan_raw": f"fans{file_time}",
                 "cha": fr"cha\cha{file_time}-1",
-                "cha_server": fr"cha_server\cha{file_time}-1"}
+                "cha_server": fr"cha\cha{file_time}-1"}
     ret = os.path.join(dir_prefix, filename[file_type] + ext)
     return ret
 

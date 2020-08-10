@@ -8,6 +8,10 @@ import requests
 
 from library.file import fast_import, log
 
+
+import paths
+# TODO 改 paths
+
 good_color_dir = r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\data\好颜色.csv"
 good_color = dict(fast_import(good_color_dir))
 
