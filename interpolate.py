@@ -1,5 +1,6 @@
 # encoding =utf-8
 from cmath import tanh
+# from itertools import repeat
 
 from scipy.interpolate import interp1d
 
@@ -46,7 +47,12 @@ def table_interpolate(data, fan_mode="gain"):
     # ret_head = [head[0]] + reduce(lambda x, y: x + y, [[_] * 5 for _ in head[1:]]) + [head[-1]] * 5
     # 特性：数字小的在前面，月度是汉字，别的是2020，最大，所以排序可以解决问题。
     # 感觉这个用法不是很安全，如果出现了问题就用上一行的。
-    ret_head = [head[0]] + sorted(head[1:] * 5) + [head[-1]] * 5
+    # ret_head = [head[0]] + sorted(head[1:] * 5) + [head[-1]] * 5
+    # 学会的新方法，不是很确定会不会出bug
+    # ret_head = [head[0]] + list(chain(*zip(*[head[1:]] * 5))) + [head[-1]] * 5
+    # ret_head = [head[0]] + [_ for data in head[1:] for _ in (data for data in range(5))] + [head[-1]] * 5
+    # ret_head = [head[0]] + [_ for data in head[1:] for _ in repeat(data, 5)] + [head[-1]] * 5
+    ret_head = [head[0]] + [_ for data in head[1:] for _ in [data]*5] + [head[-1]] * 5
     ret_body = [row_interpolate(_, fan_mode) for _ in body]
     ret = [ret_head] + ret_body
     return ret
