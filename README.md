@@ -28,8 +28,8 @@ if need_diff == "1":
 
 ### code
 存放py文件。
-    
-### amine 
+
+### amine
 动画输出。
 - 头像
 - fdata.csv
@@ -54,3 +54,24 @@ up名单
         仅对月榜有效。一般为当月最后一天23时；
         如果比t_end晚应当被重设为与t_end相同。
 - fan_mode：取值为gain和lost，标记是涨粉还是掉粉。
+
+
+
+## 日志
+
+- 20200810
+    - 狸子首次 merge 到氘化氢
+    - 💡：标准化路径 `import paths`
+    - 💡：狸工智能日报的 `Cal_cha.py` 合并到此项目，因为要用到 `diff`
+
+
+
+
+
+
+
+
+
+
+
+
