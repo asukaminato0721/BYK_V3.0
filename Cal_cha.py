@@ -58,6 +58,8 @@ if __name__ == "__main__":
 
     # today = ds_belong(time.time(),-0.5)
     # yester = ds_belong(time.time(),-1.5)
+    # today = "2020070923"
+    # yester = "2020070823"
 
     # 定时每天五点触发，若还没有 csv 文件则每 20min 再查一次
     while(bigest_file(today) == -1):
@@ -67,10 +69,10 @@ if __name__ == "__main__":
     os.system(f'echo bigest_file: {bigest_file(today)} {bigest_file(yester)} >> Cal_cha.log')
 
     try:
-        diff(ds_belong(time.time()), ds_belong(time.time()), paths.serv)
-        os.system(f'echo [%date:~0,10% %time%] python diff({ds_belong(time.time())}) finished >> Cal_cha.log')
+        diff(today, today, paths.serv)
+        os.system(f'echo [%date:~0,10% %time%] python diff({today}) finished >> Cal_cha.log')
     except Exception as e:
-        os.system(f'echo [%date:~0,10% %time%] python diff({ds_belong(time.time())}) error: {e} >> Cal_cha.log')
+        os.system(f'echo [%date:~0,10% %time%] python diff({today}) error: {e} >> Cal_cha.log')
 
 
     os.system(f'wolframscript -file {paths.serv}Cal_cha.wl {bigest_file(today)} {bigest_file(yester)} >> Cal_cha.log')

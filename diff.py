@@ -16,18 +16,18 @@ def fan_dict_data(fan_name: str, target_dir):
     return ret
 
 
-def line_diff(key_, new, old, is_halfday: bool):
+def line_diff(mid, new, old, is_halfday: bool):
     """
     行做差。
 
-    :param key_: 主键
+    :param mid: 主键
     :param new: 新表
     :param old: 旧表
     :param is_halfday: 是否是半天的，如果是的话结果翻倍。
     :return: 做差结果
     """
-    ret_head = [int(key_)]  # 确保后面排序的时候是按照数字排序的
-    ret_udata = [new[3], new[0]]
+    ret_head = [int(mid)]  # 确保后面排序的时候是按照数字排序的
+    ret_udata = [new[3], new[0]] # 取 thisday 的 name、fans 字段
     ret_fans = [(int(_[1]) - int(_[0])) * (2 if is_halfday else 1) for _ in zip(old[:3], new[:3])]
     ret_other = [(int(_[1]) - int(_[0])) * (2 if is_halfday else 1) for _ in zip(old[4:9], new[4:9])]
     ret = ret_head + ret_udata + ret_fans + [0] + ret_other
