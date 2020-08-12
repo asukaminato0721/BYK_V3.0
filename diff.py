@@ -18,13 +18,14 @@ def fan_dict_data(fan_name: str, target_dir):
 
 
 '''
+以下将 today 的 fans > 10000 且 vidcount < 3 简称为「新大佬条件」
 粉丝数 fans：默认 today - onedayago 做差，如 onedayago 无数据，与 halfdayago 做差并且数据乘二，若乘二后超过了 thisday 的数值
-    则以 today 的数值代替。如两个数据点都没有数据，且 today 的 fans > 10000 且 vidcount < 3，认为是新入站用户，
+    则以 today 的数值代替。如两个数据点都没有数据，且满足「新大佬条件」时，
     前一天数据认为是零返回 today 的数据作为作差结果。点赞数投稿数等列的逻辑同上
 播放量 vidview：默认 today - onedayago 做差，如 onedayago 无数据，与 halfdayago 做差并且数据不要乘二。
-    如两个数据点都没有数据，且 today 的 fans > 10000 且 vidcount < 3，认为是新入站用户，
-    前一天数据认为是零返回 today 的数据作为作差结果。当作差成功但得结果为零时，
-    将 today 和 1.5 天前 onehalfdayago 的结果作差取代之。若 onehalfdayago 无数据，则播放增量就填零
+    如两个数据点都没有数据，且满足「新大佬条件」时，前一天数据认为是零返回 today 的数据作为作差结果。
+    当作差成功但得结果为零时，将 today 和 1.5 天前 onehalfdayago 的结果作差取代之。
+    若 onehalfdayago 无数据，则当满足「新大佬条件」时，返回 today 的数据作为作差结果，否则播放增量就填零
     （这个处理是因为B站每天才更新一次播放量数据，有一定概率 today，halfday，ondayago 爬到的都是相同的数据）
 名字 name：输出 today 的名字到第 2 列，若跟 onedayago 相比有改名字则输出 onedayago 的名字到第 7 列，若未改名则第 7 列写 0
 '''
@@ -62,15 +63,18 @@ def line_diff(mid, new, old, old_old, halfday: int):
                 for n, w in [(int(new[_]), int(old.get(_, 0)))
                              for _ in ["fans", "vidcount"]]]
     # 6列 播放数 要特殊处理
-    ret_vidview: List[int] = calu_vidview(*[int(_.get("vidview", 0)) for _ in (new, old, old_old)])
+    ret_vidview: List[int] = calu_vidview(
+        *[int(_.get("vidview", 0)) for _ in (new, old, old_old)])
     # 7列 旧名字 如果一样就是0
-    ret_old_names = [0 if new["name"] == old.get("name", "") else old.get("name", "")]
+    ret_old_names = [0 if new["name"] == old.get(
+        "name", "") else old.get("name", "")]
     # 8-12列 关注 专栏阅读 等级 充电 点赞
     ret_other = [min(n, (n - w) * halfday)
-                 for n, w in [(int(new[_]), int(old.get(_,0)))
+                 for n, w in [(int(new[_]), int(old.get(_, 0)))
                               for _ in ['attention', 'zview', 'level', 'charge', 'likes']]]
 
-    ret: List[List] = ret_udata + ret_fans + ret_vidview + ret_old_names + ret_other
+    ret: List[List] = ret_udata + ret_fans + \
+        ret_vidview + ret_old_names + ret_other
     return ret
 
 
@@ -92,7 +96,8 @@ def cha(today: dict, halfDago: dict, oneDago: dict, onehalfDago: dict):
         # 没有数据那只能认为是零了
         # old_vid_view = int(onehalfDago.get(mid, {"vidview": 0})["vidview"])
         old_old = onehalfDago.get(mid, {})
-        line = line_diff(mid, new, old, old_old, halfday=(2 if (old == halfDago.get(mid)) else 1))
+        line = line_diff(mid, new, old, old_old, halfday=(
+            2 if (old == halfDago.get(mid)) else 1))
         if line:
             ret.append(line)
     ret.sort()
@@ -106,7 +111,8 @@ def export_data(datalist: List[dict], i_time) -> List[List]:
     """
     # 表头
     # mid, today_name, fans2020080611, fans, vidcount, vidview, oldname, attention, zview, level,charge, likes
-    export_head = fast_import(stime2filename(i_time, "fan", paths.serv))[0][:10]
+    export_head = fast_import(stime2filename(
+        i_time, "fan", paths.serv))[0][:10]
     export_head.insert(1, "today_name")
     export_head.insert(2, stime2filename(i_time, "fan_raw", ext=""))
     export_head[6] = "old_name"
@@ -128,7 +134,8 @@ def diff(t_start, t_end, target_dir=paths.serv):
     """
     log(f" 正在做差：\n\t 起始时间：{t_start}\n\t 终止时间：{t_end}\n\t 输出目录：{target_dir}")
     # 初始数据 遍历
-    datalist = [fan_dict_data(_(t_start), target_dir) for _ in (onehalfdayago, onedayago, halfdayago)]
+    datalist = [fan_dict_data(_(t_start), target_dir)
+                for _ in (onehalfdayago, onedayago, halfdayago)]
     time_list = time_str_list(t_start, t_end)
     # 对于每个时间点分别进行做差
     for i_time in time_list:
@@ -146,7 +153,8 @@ if __name__ == "__main__":
     14-15个数据点（一周）->41-44s
     约60个数据点（一月）->170-172s
     """
-    diff("2020063023", "2020073123", r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\")
+    diff("2020063023", "2020073123",
+         r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\")
 
     import time
 
