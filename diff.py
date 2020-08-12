@@ -28,6 +28,7 @@ def fan_dict_data(fan_name: str, target_dir):
     若 onehalfdayago 无数据，则当满足「新大佬条件」时，返回 today 的数据作为作差结果，否则播放增量就填零
     （这个处理是因为B站每天才更新一次播放量数据，有一定概率 today，halfday，ondayago 爬到的都是相同的数据）
 名字 name：输出 today 的名字到第 2 列，若跟 onedayago 相比有改名字则输出 onedayago 的名字到第 7 列，若未改名则第 7 列写 0
+负数数据一律当作无数据处理，然后让程序去找半天前的作差，后面的逻辑一样，如果半天前也没有数据那不满足新大佬条件的就记作零
 '''
 
 
