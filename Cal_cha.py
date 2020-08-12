@@ -31,9 +31,9 @@ from os import listdir
 from os.path import isfile, join
 
 def bigest_file(tim):
-    onlyfiles = [f for f in listdir(paths.fans) if (isfile(join(paths.fans, f)) and len(re.findall(r'^fans'+tim+'(.*)\.csv',f)) > 0)]
+    onlyfiles = [f for f in listdir(paths.fans) if (isfile(join(paths.fans, f)) and len(re.findall(r'^fans' + tim + '(.*)\.csv', f)) > 0)]
     if(len(onlyfiles)>0):
-        fsize = {f:os.stat(paths.fans+f).st_size for f in onlyfiles}
+        fsize = {f:os.stat(paths.fans + f).st_size for f in onlyfiles}
         # 取体积最大的，若为零则忽略该文件
         fmax = max(fsize, key = fsize.get)
         if(fsize[fmax] < 1024): # 单位字节

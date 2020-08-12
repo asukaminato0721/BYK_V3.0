@@ -14,7 +14,7 @@ from library.file import fast_export, log
 
 import paths
 default_absolute_dir = paths.serv
-config_dir = paths.byk
+config_dir = paths.cfg
 cha_dir = paths.serv
 
 ups_dir = "temp/ups.csv"
