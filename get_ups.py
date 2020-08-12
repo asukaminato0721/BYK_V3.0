@@ -1,5 +1,5 @@
 # encoding =utf-8
-
+import paths
 from library.file import fast_export, stime2filename, fast_import
 from library.time_process import time_str_list
 
@@ -14,9 +14,9 @@ def select_from_a_file(file_data, top_count):
     return ups
 
 
-def select_from_files(start, end, gainlost, cha_dir):
+def select_from_files(start, end, gainlost, cha_dir=paths.serv):
     """
-    :param t_start,end:起止时间
+    :param start,end:起止时间
     :param gainlost: 涨粉还是掉粉
     :param gainlost: 涨粉为True，否则是False
     :return:ups_ :List

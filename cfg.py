@@ -4,13 +4,15 @@
 输出动画文件的congfig.csv
 共计90行。
 """
+import os
 
+import paths
 from library.file import fast_import, fast_export
 from library.time_process import smart_choice_time, oneweekago, smart_choice_startend
 
 
 class Config:
-    def __init__(self, config_dir=None):
+    def __init__(self, config_dir=paths.cfg):
         """
 
         :thisday config_dir: 文件路径，要求带斜杠
@@ -19,7 +21,7 @@ class Config:
         if config_dir is None:
             self.config = {}
         else:
-            self.config = fast_import(config_dir + "config.json", "json")
+            self.config = fast_import(os.path.join(config_dir, "config.json"), "json")
         pass
 
     def month(self, month: int = None):
