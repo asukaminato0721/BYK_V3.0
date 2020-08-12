@@ -28,7 +28,7 @@ exec("import csv")
 log = print
 
 
-def fast_import(file_name: str, ext="csv") -> List[list]:
+def fast_import(file_name: str, ext="csv") -> List[list] or dict:
     """
     导入文件。
 
@@ -80,7 +80,7 @@ def filename2time(file_name: str):
     return re.search(r'2020\d{6}', file_name[:16]).group()
 
 
-def stime2filename(file_time: str, file_type: str, dir_prefix: str = "", ext: str = ".csv")->str:
+def stime2filename(file_time: str, file_type: str, dir_prefix: str = "", ext: str = ".csv") -> str:
     """
     给定字符串格式时间，构建相应的csv文件名。
     stime2filename(2020070411,"fan") -> fans\fans2020070411.csv
@@ -93,23 +93,28 @@ def stime2filename(file_time: str, file_type: str, dir_prefix: str = "", ext: st
     # fan文件特殊处理
     if file_type == "fan":
         fan_dir = os.path.join(dir_prefix, "fans\\")
-        is_legal = lambda f: isfile(fan_dir + f) and re.match(rf"^fans{file_time}.*\.csv", f)
-        legal_files = [f for f in listdir(fan_dir) if is_legal(f)]
-        if not legal_files:
-            raise FileNotFoundError(fan_dir + f"fans{file_time}*.csv not exist.")
-        file2size_dict = {f: os.stat(fan_dir + f).st_size for f in legal_files}
-        ret = max(file2size_dict, key=file2size_dict.get)
-        # 小文件也视作异常
-        min_allowed_file_size = 1024
-        if file2size_dict[ret] < min_allowed_file_size:
-            raise FileNotFoundError
-        return fan_dir + ret
+        ret = get_fan_name(fan_dir, file_time)
+        return ret
 
     filename = {"fan_raw": f"fans{file_time}",
                 "cha": fr"cha\cha{file_time}-1",
                 "cha_server": fr"cha\cha{file_time}-1"}
     ret = os.path.join(dir_prefix, filename[file_type] + ext)
     return ret
+
+
+def get_fan_name(fan_dir, file_time):
+    is_legal = lambda f: isfile(fan_dir + f) and re.match(rf"^fans{file_time}.*\.csv", f)
+    legal_files = [f for f in listdir(fan_dir) if is_legal(f)]
+    if not legal_files:
+        raise FileNotFoundError(fan_dir + f"fans{file_time}*.csv not exist.")
+    file2size_dict = {f: os.stat(fan_dir + f).st_size for f in legal_files}
+    ret = max(file2size_dict, key=file2size_dict.get)
+    # 小文件也视作异常
+    min_allowed_file_size = 1024
+    if file2size_dict[ret] < min_allowed_file_size:
+        raise FileNotFoundError
+    return os.path.join(fan_dir, ret)
 
 
 def replaceAll(s: str, rule: dict):
