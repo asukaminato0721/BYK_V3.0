@@ -32,6 +32,17 @@ def fan_dict_data(fan_name: str, target_dir):
 
 def calu_vidview(new: int, old: int, old_old: int) -> List[int]:
     """
+    参数分别为当天 一天或半天前 一天半前数据。
+    若当天无数据 参数为零
+    """
+    # 新入站大佬说明前三个数据点都没有数据 也就是old 和 old_old 都是零
+    # 不管new减去啥都是new自己
+    ret: int = new - old if new - old else new - old_old
+    return [ret]
+
+
+def line_diff(mid, new, old, old_old, halfday: int):
+    """
     行做差。
 
     :param mid: 主键
@@ -41,27 +52,22 @@ def calu_vidview(new: int, old: int, old_old: int) -> List[int]:
     :return: 做差结果
     """
     # 慢慢爬进来的情况，不予做差，否则当天会出现数据异常
-    if old is None:
-        if int(new["fans"]) < 10000:
-            return
-        else:
-            old = {}
-    # 以下为正常人
+    if not old and (int(new["fans"]) < 10000 or int(new["vidview"]) > 3):
+        return
+    # 以下为正常人（含新大佬）
     # 1-3列:mid,名字 瞬时粉丝量
     ret_udata = [int(mid), new["name"], new["fans"]]
     # 4-5列：粉丝 视频数 的变化情况
     ret_fans = [min(n, (n - w) * halfday)
-                for n, w in [(int(new[_]), int(old[_]))
+                for n, w in [(int(new[_]), int(old.get(_, 0)))
                              for _ in ["fans", "vidcount"]]]
     # 6列 播放数 要特殊处理
-    ret_vidview = [min(n, (n - w if n - w > 0 else n - old_vid_view) * halfday)
-                   for n, w in [(int(new[_]), int(old.get(_)))
-                                for _ in ["vidview"]]]
+    ret_vidview: List[int] = calu_vidview(*[int(_.get("vidview", 0)) for _ in (new, old, old_old)])
     # 7列 旧名字 如果一样就是0
-    ret_old_names = [0 if new["name"] == old["name"] else old["name"]]
+    ret_old_names = [0 if new["name"] == old.get("name", "") else old.get("name", "")]
     # 8-12列 关注 专栏阅读 等级 充电 点赞
     ret_other = [min(n, (n - w) * halfday)
-                 for n, w in [(int(new[_]), int(old[_]))
+                 for n, w in [(int(new[_]), int(old.get(_,0)))
                               for _ in ['attention', 'zview', 'level', 'charge', 'likes']]]
 
     ret: List[List] = ret_udata + ret_fans + ret_vidview + ret_old_names + ret_other
@@ -82,14 +88,34 @@ def cha(today: dict, halfDago: dict, oneDago: dict, onehalfDago: dict):
     for mid in today.keys():
         new = today[mid]
         # 若无数据，则给一个None
-        old = oneDago.get(mid, halfDago.get(mid, None))
+        old = oneDago.get(mid, halfDago.get(mid, {}))
         # 没有数据那只能认为是零了
-        old_vid_view = int(onehalfDago.get(mid, {"vidview": 0})["vidview"])
-        line = line_diff(mid, new, old, old_vid_view, halfday=(2 if (old == halfDago.get(mid)) else 1))
+        # old_vid_view = int(onehalfDago.get(mid, {"vidview": 0})["vidview"])
+        old_old = onehalfDago.get(mid, {})
+        line = line_diff(mid, new, old, old_old, halfday=(2 if (old == halfDago.get(mid)) else 1))
         if line:
             ret.append(line)
     ret.sort()
     return ret
+
+
+def export_data(datalist: List[dict], i_time) -> List[List]:
+    """
+    :@param datalist:数据列表 实际上只需要最后4项
+    :@param i_time:字符串时间
+    """
+    # 表头
+    # mid, today_name, fans2020080611, fans, vidcount, vidview, oldname, attention, zview, level,charge, likes
+    export_head = fast_import(stime2filename(i_time, "fan", paths.serv))[0][:10]
+    export_head.insert(1, "today_name")
+    export_head.insert(2, stime2filename(i_time, "fan_raw", ext=""))
+    export_head[6] = "old_name"
+
+    # export_body = cha(datalist[-1], datalist[-2], datalist[-3], datalist[-4])
+    # 需要当天数据，一天前数据，备用的半天前数据，用来计算的一天半前数据
+    export_body = cha(*datalist[:-5:-1])
+    export = export_head + export_body
+    return export
 
 
 def diff(t_start, t_end, target_dir=paths.serv):
@@ -107,17 +133,7 @@ def diff(t_start, t_end, target_dir=paths.serv):
     # 对于每个时间点分别进行做差
     for i_time in time_list:
         datalist.append(fan_dict_data(i_time, target_dir))
-        # 表头
-        export_head = fast_import(stime2filename(i_time, "fan", target_dir))[0][:10]
-        export_head.insert(1, "today_name")
-        export_head.insert(2, stime2filename(i_time, "fan_raw", ext=""))
-        export_head[6] = "old_name"
-        # mid, today_name, fans2020080611, fans, vidcount, vidview, oldname, attention, zview, level,charge, likes
-
-        # export_body = cha(datalist[-1], datalist[-2], datalist[-3], datalist[-4])
-        export_body = cha(*datalist[:-5:-1])
-        # 需要当天数据，一天前数据，备用的半天前数据，用来计算的一天半前数据
-        export = [export_head] + export_body
+        export = export_data(datalist, i_time)
         export_dir = stime2filename(i_time, "cha", target_dir)
         fast_export(export, export_dir)
         print(f"export file at {export_dir}")
