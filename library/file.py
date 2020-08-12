@@ -28,7 +28,7 @@ exec("import csv")
 log = print
 
 
-def fast_import(file_name: str, ext="csv") -> List[list]:
+def fast_import(file_name: str, ext="csv") -> List[list] or dict:
     """
     导入文件。
 
