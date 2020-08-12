@@ -59,7 +59,7 @@ def line_diff(mid, new, old, old_old, halfday: int):
     :return: 做差结果
     """
     # 慢慢爬进来的情况，不予做差，否则当天会出现数据异常
-    if not (old and old_old) and (int(new["fans"]) < 10000 or int(new["vidview"]) > 3):
+    if not (old and old_old and old.get('charge') == -1) and (int(new["fans"]) < 10000 or int(new["vidview"]) > 3):
         return
     # 以下为正常人（含新大佬）
     # 1-3列:mid,名字 瞬时粉丝量
