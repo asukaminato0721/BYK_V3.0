@@ -17,8 +17,8 @@ def fan_dict_data(fan_name: str, target_dir):
 
 '''
 粉丝数 fans：默认 today - onedayago 做差，如 onedayago 无数据，与 halfdayago 做差并且数据乘二，若乘二后超过了 thisday 的数值
-    则以 today 的数值代替。如两个数据点都没有数据，且 today 的 fans > 10000，认为是新入站用户，前一天数据认为是零返回 today 的数据作为作差结果 点赞数投稿数等列的逻辑同上 
-播放量 vidview：逻辑同上，并且当作差得结果为零时，将 today 和1.5天前 onehalfdayago 的结果作差取代之
+    则以 today 的数值代替。如两个数据点都没有数据，且 today 的 fans > 10000 且 vidcount < 3，认为是新入站用户，前一天数据认为是零返回 today 的数据作为作差结果。点赞数投稿数等列的逻辑同上
+播放量 vidview：默认 today - onedayago 做差，如 onedayago 无数据，与 halfdayago 做差并且数据不要乘二。如两个数据点都没有数据，且 today 的 fans > 10000 且 vidcount < 3，认为是新入站用户，前一天数据认为是零返回 today 的数据作为作差结果。当作差成功但得结果为零时，将 today 和 1.5 天前 onehalfdayago 的结果作差取代之。若 onehalfdayago 无数据，则播放增量就填零
     （这个处理是因为B站每天才更新一次播放量数据，有一定概率 today，halfday，ondayago 爬到的都是相同的数据）
 名字 name：输出 today 的名字到第 2 列，若跟 onedayago 相比有改名字则输出 onedayago 的名字到第 7 列，若未改名则第 7 列写 0
 '''
