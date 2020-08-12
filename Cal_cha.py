@@ -68,11 +68,11 @@ if __name__ == "__main__":
 
     os.system(f'echo bigest_file: {bigest_file(today)} {bigest_file(yester)} >> Cal_cha.log')
 
-    try:
-        diff(today, today, paths.serv)
-        os.system(f'echo [%date:~0,10% %time%] python diff({today}) finished >> Cal_cha.log')
-    except Exception as e:
-        os.system(f'echo [%date:~0,10% %time%] python diff({today}) error: {e} >> Cal_cha.log')
+    # try:
+    #     diff(today, today, paths.serv)
+    #     os.system(f'echo [%date:~0,10% %time%] python diff({today}) finished >> Cal_cha.log')
+    # except Exception as e:
+    #     os.system(f'echo [%date:~0,10% %time%] python diff({today}) error: {e} >> Cal_cha.log')
 
 
     os.system(f'wolframscript -file {paths.serv}Cal_cha.wl {bigest_file(today)} {bigest_file(yester)} >> Cal_cha.log')

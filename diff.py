@@ -1,19 +1,23 @@
 # encoding =utf-8
 """
 做差相关函数。
-共81行。
+共 81 行。
 """
 from library.file import stime2filename, fast_export, fast_import
 from library.time_process import onedayago, halfdayago, time_str_list
 
 
 def fan_dict_data(fan_name: str, target_dir):
-    """
-    给出指定文件名的fan文件数据。
-    """
-    datalist = fast_import(stime2filename(fan_name, "fan", target_dir))
+    """给出指定文件名的 fan 文件数据。"""
+    datalist = fast_import(stime2filename(fan_name,"fan", target_dir))
     ret = {_[0]: _[1:] for _ in datalist[1:]}
     return ret
+
+
+# 粉丝数 fans：默认 thisday - onedayago 做差，如 onedayago 无数据，与 halfdayago 做差并且数据乘二，若乘二后超过了 thisday 的数值则以 thisday的数值代替。如两个数据点都没有数据，且 thisday 的 fans > 10000，认为是新入站用户，前一天数据认为是零返回 thisday 的数据作为作差结果
+# 点赞数投稿数等列的逻辑同上
+# 播放量 vidview：逻辑同上，并且当作差得结果为零时，将 thisday 和1.5天前 onehalfdayago 的结果作差取代之（这个处理是因为B站每天才更新一次播放量数据，有一定概率 thisday，halfday，ondayago 爬到的都是相同的数据）
+# 名字 name：输出 thisday 的名字到第 2 列，若跟 onedayago 相比有改名字则输出 onedayago 的名字到第 7 列，若未改名则第 7 列写 0
 
 
 def line_diff(mid, new, old, is_halfday: bool):
@@ -37,14 +41,13 @@ def line_diff(mid, new, old, is_halfday: bool):
 def cha(thisday: dict, oneDago: dict, halfDago: dict):
     """
     对 thisday 的数据进行做差。默认与 onedayago 做差，
-    如onedayago无数据，与 halfdayago 做差并且数据乘二。
+    如 onedayago 无数据，与 halfdayago 做差并且数据乘二。
     如两个数据点都没有数据，认为是新入站用户，前一天数据认为是零。
 
-    :param thisday:当前数据
-    :param oneDago:半天前数据
+    :param thisday: 当前数据
+    :param oneDago: 半天前数据
     :param halfDago:，一天前数据
-    """
-    ret = []
+    """ret = []
     for mid in thisday.keys():
         new = thisday[mid]
         old = oneDago.get(mid, halfDago.get(mid, [0] * len(new)))
@@ -60,10 +63,9 @@ def diff(t_start, t_end, target_dir):
 
     :thisday t_start: 开始时间，字符串格式
     :thisday t_end: 结束时间，字符串格式
-    :thisday target_dir: 输出路径，cha文件夹的上级目录
+    :thisday target_dir: 输出路径，cha 文件夹的上级目录
     :return:
-    """
-    print(f"正在做差：\n\t起始时间：{t_start}\n\t终止时间：{t_end}\n\t输出目录：{target_dir}")
+    """print(f" 正在做差：\n\t 起始时间：{t_start}\n\t 终止时间：{t_end}\n\t 输出目录：{target_dir}")
     # 初始数据
     datalist = [fan_dict_data(onedayago(t_start), target_dir), fan_dict_data(halfdayago(t_start), target_dir)]
     # 遍历
@@ -71,13 +73,13 @@ def diff(t_start, t_end, target_dir):
     for i_time in time_list:
         datalist.append(fan_dict_data(i_time, target_dir))
         # 表头
-        export_head = fast_import(stime2filename(i_time, "fan", target_dir))[0][:10]
-        export_head.insert(1, "name")
-        export_head.insert(2, stime2filename(i_time, "fan_raw", ext=""))
+        export_head = fast_import(stime2filename(i_time,"fan", target_dir))[0][:10]
+        export_head.insert(1,"name")
+        export_head.insert(2, stime2filename(i_time,"fan_raw", ext=""))
 
         export_body = cha(datalist[-1], datalist[-3], datalist[-2])
         export = [export_head] + export_body
-        export_dir = stime2filename(i_time, "cha", target_dir)
+        export_dir = stime2filename(i_time,"cha", target_dir)
         fast_export(export, export_dir)
         print(f"export file at {export_dir}")
 
