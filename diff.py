@@ -35,8 +35,11 @@ def line_diff(mid, new, old, old_vid_view, halfday: int):
     :return: 做差结果
     """
     # 慢慢爬进来的情况，不予做差，否则当天会出现数据异常
-    if old is None and int(new["fans"]) < 10000:
-        return
+    if old is None:
+        if int(new["fans"]) < 10000:
+            return
+        else:
+            old = {}
     # 以下为正常人
     # 1-3列:mid,名字 瞬时粉丝量
     ret_udata = [int(mid), new["name"], new["fans"]]
@@ -46,7 +49,7 @@ def line_diff(mid, new, old, old_vid_view, halfday: int):
                              for _ in ["fans", "vidcount"]]]
     # 6列 播放数 要特殊处理
     ret_vidview = [min(n, (n - w if n - w > 0 else n - old_vid_view) * halfday)
-                   for n, w in [(int(new[_]), int(old[_]))
+                   for n, w in [(int(new[_]), int(old.get(_)))
                                 for _ in ["vidview"]]]
     # 7列 旧名字 如果一样就是0
     ret_old_names = [0 if new["name"] == old["name"] else old["name"]]
@@ -117,7 +120,7 @@ def diff(t_start, t_end, target_dir=paths.serv):
 
 
 if __name__ == "__main__":
-    diff("2020080611", "2020081111", r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\")
+    diff("2020081123", "2020081123", r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\")
 
     import time
 
