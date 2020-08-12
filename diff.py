@@ -73,8 +73,7 @@ def line_diff(mid, new, old, old_old, halfday: int):
                  for n, w in [(int(new[_]), int(old.get(_, 0)))
                               for _ in ['attention', 'zview', 'level', 'charge', 'likes']]]
 
-    ret: List[List] = ret_udata + ret_fans + \
-        ret_vidview + ret_old_names + ret_other
+    ret: List[List] = ret_udata + ret_fans + ret_vidview + ret_old_names + ret_other
     return ret
 
 
@@ -96,8 +95,7 @@ def cha(today: dict, halfDago: dict, oneDago: dict, onehalfDago: dict):
         # 没有数据那只能认为是零了
         # old_vid_view = int(onehalfDago.get(mid, {"vidview": 0})["vidview"])
         old_old = onehalfDago.get(mid, {})
-        line = line_diff(mid, new, old, old_old, halfday=(
-            2 if (old == halfDago.get(mid)) else 1))
+        line = line_diff(mid, new, old, old_old, halfday=(2 if (old == halfDago.get(mid)) else 1))
         if line:
             ret.append(line)
     ret.sort()
@@ -111,8 +109,7 @@ def export_data(datalist: List[dict], i_time) -> List[List]:
     """
     # 表头
     # mid, today_name, fans2020080611, fans, vidcount, vidview, oldname, attention, zview, level,charge, likes
-    export_head = fast_import(stime2filename(
-        i_time, "fan", paths.serv))[0][:10]
+    export_head = fast_import(stime2filename(i_time, "fan", paths.serv))[0][:10]
     export_head.insert(1, "today_name")
     export_head.insert(2, stime2filename(i_time, "fan_raw", ext=""))
     export_head[6] = "old_name"
@@ -151,9 +148,9 @@ if __name__ == "__main__":
     参考运行时间（基准=i7-8750@3.7GHz，输出存放于移动硬盘）
     1个数据点（即刻）->4-5s
     14-15个数据点（一周）->41-44s
-    约60个数据点（一月）->170-172s
+    约60个数据点（一月）->169-172s
     """
-    diff("2020063023", "2020073123",
+    diff("2020081211", "2020081211",
          r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\")
 
     import time
