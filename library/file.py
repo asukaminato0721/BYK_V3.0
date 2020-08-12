@@ -75,7 +75,7 @@ def filename2time(file_name: str):
     """
     暂时用不上 以后可能有用
 
-    @param file_name:文件全名，如fans2020071023.csv
+    @param file_name:文件全名，如fans2020081211-SH20200812103203.csv
     """
     return re.search(r'2020\d{6}', file_name[:16]).group()
 
