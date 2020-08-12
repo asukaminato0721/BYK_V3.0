@@ -13,7 +13,6 @@ def select_from_a_file(file_data, top_count):
     ups = {_[0] for _ in concerned_updata}
     return ups
 
-
 def select_from_files(start, end, gainlost, cha_dir=paths.serv):
     """
     :param start,end:起止时间
@@ -31,6 +30,7 @@ def select_from_files(start, end, gainlost, cha_dir=paths.serv):
     ups = set.union(*[select_from_a_file(file, top_count=top_count) for file in file_data])
     fast_export([ups], "temp/ups.csv", "csv")
     return ups
+
 
 
 if __name__ == "__main__":

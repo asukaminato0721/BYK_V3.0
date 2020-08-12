@@ -48,7 +48,8 @@ def cha(thisday: dict, oneDago: dict, halfDago: dict):
     :param thisday: 当前数据
     :param oneDago: 半天前数据
     :param halfDago:，一天前数据
-    """ret = []
+    """
+    ret = []
     for mid in thisday.keys():
         new = thisday[mid]
         old = oneDago.get(mid, halfDago.get(mid, [0] * len(new)))
@@ -66,7 +67,8 @@ def diff(t_start, t_end, target_dir=paths.serv):
     :thisday t_end: 结束时间，字符串格式
     :thisday target_dir: 输出路径，cha 文件夹的上级目录
     :return:
-    """print(f" 正在做差：\n\t 起始时间：{t_start}\n\t 终止时间：{t_end}\n\t 输出目录：{target_dir}")
+    """
+    print(f" 正在做差：\n\t 起始时间：{t_start}\n\t 终止时间：{t_end}\n\t 输出目录：{target_dir}")
     # 初始数据
     datalist = [fan_dict_data(onedayago(t_start), target_dir), fan_dict_data(halfdayago(t_start), target_dir)]
     # 遍历
