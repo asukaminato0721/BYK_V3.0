@@ -42,7 +42,7 @@ else:
 log("开始搜索up名单")
 ups = ups.select_from_files(config.t_start(), config.t_end(), config.gainlost())
 fast_export([[int(_) for _ in ups]], ups_dir, "csv")
-log("输出up名单成功")
+log(f"输出up名单成功 共计{len(ups)}位")
 
 # video_list(elective,get amine/fdata)
 if config.gainlost() == "gain" and config.month():

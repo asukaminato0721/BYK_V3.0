@@ -8,8 +8,6 @@ import requests
 
 from library.file import fast_import, log
 
-
-import paths
 # TODO 改 paths
 
 good_color_dir = r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\data\好颜色.csv"
@@ -34,13 +32,13 @@ blacklist = ["吴织亚切大忽悠"]
 def download_header(uid, face_link):
     command = fr"wolframscript -file headpic.wls {uid} {face_link}"
     with os.popen(command, 'r') as f:
-        color = f.read().replace("\n","")
+        color = f.read().replace("\n", "")
     if uid in good_color:
         color = good_color[uid]
     return color
 
 
-def crawl(up_data):
+def crawl(up_data, index):
     """
     爬取用户名 计算颜色
 
@@ -49,7 +47,7 @@ def crawl(up_data):
     """
     # uid
     uid = up_data[0]
-    log(f"正在处理{uid}")
+    log(f"{index}:正在处理{uid}", end="\t" if index % 5 else "\n")
     udata = up_data[1:]
     # 超时处理
     try:
@@ -87,7 +85,7 @@ def headpic(inter_data):
     # 表头
     head = inter_data[0]
     ret_head = [head[0], "", ""] + head[1:]
-    ret_body = [crawl(up_data) for up_data in inter_data[1:]]
+    ret_body = [crawl(up_data, index) for up_data, index in zip(inter_data[1:], range(1, len(inter_data)))]
     # transpose
     ret = zip(ret_head, *ret_body)
     return ret

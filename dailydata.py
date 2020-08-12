@@ -4,11 +4,10 @@
 """
 import time
 
+import paths
 from library.file import replaceAll, log, stime2filename, fast_import
 from library.time_process import time_str_list, str2tuple
 
-
-import paths
 pre = paths.serv
 # pre = r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\"
 
@@ -16,15 +15,16 @@ pre = paths.serv
 if __name__ == "__main__":
     pass
 
-
 week_eng2chs = {"Mon": "周一", "Tue": "周二", "Wed": "周三", "Thu": "周四", "Fri": "周五",
                 "Sat": "周六", "Sun": "周日", "11时": "日", "23时": "夜"}
-# eng2chs_rule = lambda date: replaceAll(time.strftime("%Y年%m月%d日（%a）", str2tuple(date)), week_eng2chs)
-def eng2chs_rule(date,lenstr="yyyy年mm月dd日（周x）"):
-    s1 = time.strftime("%Y年%m月%d日（%a）%H时".encode('unicode_escape').decode('utf8'),str2tuple(date)).encode('utf-8').decode('unicode_escape')
-    s = replaceAll(s1, week_eng2chs)
-    return s[:min(len(lenstr),len(s))]
 
+
+# eng2chs_rule = lambda date: replaceAll(time.strftime("%Y年%m月%d日（%a）", str2tuple(date)), week_eng2chs)
+def eng2chs_rule(date, lenstr="yyyy年mm月dd日（周x）"):
+    s1 = time.strftime("%Y年%m月%d日（%a）%H时".encode('unicode_escape').decode('utf8'), str2tuple(date)).encode(
+        'utf-8').decode('unicode_escape')
+    s = replaceAll(s1, week_eng2chs)
+    return s[:min(len(lenstr), len(s))]
 
 
 def dailydata(date, ups, target="fan"):
@@ -87,7 +87,7 @@ def daysdata(t_start: str, t_end: str, m_end: str, ups: list, fan_mode="gain"):
         #     if data[day][errup] is None:
         #         lost_days.append(day)
         lost_days = [day for day in month_day_list if errup not in data[day]]
-        print(f"合计{len(lost_days)}个半天,如下：\n", lost_days)
+        log(f"合计{len(lost_days)}个半天:", "\t".join(date[4:] for date in lost_days))
 
     # 取得本月余下数据
     rest_day_list = time_str_list(m_end, t_end)[1:]

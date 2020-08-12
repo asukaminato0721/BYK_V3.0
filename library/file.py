@@ -17,13 +17,13 @@ from os.path import isfile
 
 exec("import csv")
 
-
-def log(*_, end="\n"):
-    """
-    输出日志，方便手工改输出，暂时先打印到屏幕上
-    :param _:输出内容
-    """
-    print(*_, end=end)
+# def log(*_, end="\n"):
+#     """
+#     输出日志，方便手工改输出，暂时先打印到屏幕上
+#     :param _:输出内容
+#     """
+#     print(*_, end=end)
+log = print
 
 
 def fast_import(file_name: str, ext="csv"):
@@ -70,7 +70,7 @@ def fast_export(data, file_name, ext="csv"):
 
 
 def filename2itime(file_name: str):
-    return("20"+re.findall(r'20(\d{8})\.csv',file_name)[0])
+    return ("20" + re.findall(r'20(\d{8})\.csv', file_name)[0])
 
 
 def stime2filename(file_time: str, file_type: str, dir_prefix: str = "", ext: str = ".csv"):

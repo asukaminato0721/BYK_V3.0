@@ -8,7 +8,7 @@ def select_from_a_file(file_data, top_count):
     """从单个文件中搜索前若干名"""
     # 第四列：粉丝量，对应这里的key选择x的第四列（x[3]）
     # 要做粉丝榜以外的改这里可以很方便的处理
-    sorted_data = sorted(file_data[1:], key=lambda x: int(x[3]), reverse=top_count > 0)[:top_count]
+    sorted_data = sorted(file_data[1:], key=lambda x: int(x[3]), reverse=top_count < 0)[:top_count]
     concerned_updata = sorted_data[:abs(top_count)]
     ups = {_[0] for _ in concerned_updata}
     return ups
