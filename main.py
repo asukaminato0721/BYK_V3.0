@@ -1,5 +1,4 @@
 # encoding =utf-8
-import os
 import time
 
 import cfg
@@ -7,23 +6,22 @@ import dailydata
 import fdata
 import get_ups as ups
 import interpolate
+import paths
 from diff import diff
 # global variable
 from headpic import headpic
 from library.file import fast_export, log
 
-import paths
 default_absolute_dir = paths.serv
-config_dir = paths.cfg
-cha_dir = paths.serv
 
+# 几个中间文件 不影响运行
 ups_dir = "temp/ups.csv"
 raw_dir = "temp/data_raw"
 inter_dir = "temp/data_yuedu.csv"
-data_dir = r"amine\data.csv"
+data_dir = r"amine/data.csv"
 
 # load config
-config = cfg.Config(config_dir)
+config = cfg.Config()
 
 fan_type = input("选择：涨粉=gain/掉粉=lost \n ")
 config.gainlost(fan_type)
@@ -35,14 +33,14 @@ config.month(duration_type)
 need_diff = input("是否做差？0=已有/1=要\n")
 if need_diff == "1":
     log("开始做差")
-    diff(config.t_start(), config.t_end(), cha_dir)
+    diff(config.t_start(), config.t_end())
     log("做差完成")
 else:
     log("跳过做差")
 
 # search(get ups_)
 log("开始搜索up名单")
-ups = ups.select_from_files(config.t_start(), config.t_end(), config.gainlost(), cha_dir)
+ups = ups.select_from_files(config.t_start(), config.t_end(), config.gainlost())
 fast_export([[int(_) for _ in ups]], ups_dir, "csv")
 log("输出up名单成功")
 

@@ -3,6 +3,7 @@
 做差相关函数。
 共81行。
 """
+import paths
 from library.file import stime2filename, fast_export, fast_import
 from library.time_process import onedayago, halfdayago, time_str_list
 
@@ -54,7 +55,7 @@ def cha(thisday: dict, oneDago: dict, halfDago: dict):
     return ret
 
 
-def diff(t_start, t_end, target_dir):
+def diff(t_start, t_end, target_dir=paths.serv):
     """
     给定起止时间，每半天计算一个差文件
 
