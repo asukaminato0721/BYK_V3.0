@@ -38,7 +38,7 @@ def calu_vidview(new: int, old: int, old_old: int) -> List[int]:
     """
     # 新入站大佬说明前三个数据点都没有数据 也就是old 和 old_old 都是零
     # 不管new减去啥都是new自己
-    ret: int = new - old if new - old else new - old_old
+    ret: int = new - old if new - old else new - old_old if old_old else 0
     return [ret]
 
 
@@ -53,7 +53,7 @@ def line_diff(mid, new, old, old_old, halfday: int):
     :return: 做差结果
     """
     # 慢慢爬进来的情况，不予做差，否则当天会出现数据异常
-    if not old and (int(new["fans"]) < 10000 or int(new["vidview"]) > 3):
+    if not (old and old_old) and (int(new["fans"]) < 10000 or int(new["vidview"]) > 3):
         return
     # 以下为正常人（含新大佬）
     # 1-3列:mid,名字 瞬时粉丝量
@@ -120,7 +120,7 @@ def export_data(datalist: List[dict], i_time) -> List[List]:
     # export_body = cha(datalist[-1], datalist[-2], datalist[-3], datalist[-4])
     # 需要当天数据，一天前数据，备用的半天前数据，用来计算的一天半前数据
     export_body = cha(*datalist[:-5:-1])
-    export = export_head + export_body
+    export = [export_head] + export_body
     return export
 
 
