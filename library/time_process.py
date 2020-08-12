@@ -57,7 +57,7 @@ def time_str_list(t_start: str, t_end: str, interval=12):
     return ret
 
 
-def smart_choice_time(time_=None, offset=0):
+def smart_choice_time(time_=time.time(), offset=0):
     """
     给出当前时间点上最后生成文件的时间
     :param: offset:向前数几天
@@ -73,11 +73,11 @@ def smart_choice_time(time_=None, offset=0):
     # elif hour_now < 15:
     #     ret = halfdayago(ret)
     # return ret
-    if time_ is None:
-        # 当前时间
-        u_now = time.time()
-    else:
+    if isinstance(time_, str):
         u_now = str2unix(time_)
+    else:
+        u_now = time_
+
     # 前推 4 小时，任何4小时前没有开始的数据都应该没出来
     process_time = 3600 * 6
     # 偏置 3 小时 测试结果别问我为啥
