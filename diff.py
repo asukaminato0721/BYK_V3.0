@@ -3,8 +3,10 @@
 做差相关函数。
 共 81 行。
 """
+from typing import List
+
 import paths
-from library.file import stime2filename, fast_export, fast_import
+from library.file import stime2filename, fast_export, fast_import, log
 from library.time_process import onedayago, halfdayago, time_str_list, onehalfdayago
 
 
@@ -17,14 +19,18 @@ def fan_dict_data(fan_name: str, target_dir):
 
 '''
 粉丝数 fans：默认 today - onedayago 做差，如 onedayago 无数据，与 halfdayago 做差并且数据乘二，若乘二后超过了 thisday 的数值
-    则以 today 的数值代替。如两个数据点都没有数据，且 today 的 fans > 10000 且 vidcount < 3，认为是新入站用户，前一天数据认为是零返回 today 的数据作为作差结果。点赞数投稿数等列的逻辑同上
-播放量 vidview：默认 today - onedayago 做差，如 onedayago 无数据，与 halfdayago 做差并且数据不要乘二。如两个数据点都没有数据，且 today 的 fans > 10000 且 vidcount < 3，认为是新入站用户，前一天数据认为是零返回 today 的数据作为作差结果。当作差成功但得结果为零时，将 today 和 1.5 天前 onehalfdayago 的结果作差取代之。若 onehalfdayago 无数据，则播放增量就填零
+    则以 today 的数值代替。如两个数据点都没有数据，且 today 的 fans > 10000 且 vidcount < 3，认为是新入站用户，
+    前一天数据认为是零返回 today 的数据作为作差结果。点赞数投稿数等列的逻辑同上
+播放量 vidview：默认 today - onedayago 做差，如 onedayago 无数据，与 halfdayago 做差并且数据不要乘二。
+    如两个数据点都没有数据，且 today 的 fans > 10000 且 vidcount < 3，认为是新入站用户，
+    前一天数据认为是零返回 today 的数据作为作差结果。当作差成功但得结果为零时，
+    将 today 和 1.5 天前 onehalfdayago 的结果作差取代之。若 onehalfdayago 无数据，则播放增量就填零
     （这个处理是因为B站每天才更新一次播放量数据，有一定概率 today，halfday，ondayago 爬到的都是相同的数据）
 名字 name：输出 today 的名字到第 2 列，若跟 onedayago 相比有改名字则输出 onedayago 的名字到第 7 列，若未改名则第 7 列写 0
 '''
 
 
-def line_diff(mid, new, old, old_vid_view, halfday: int):
+def calu_vidview(new: int, old: int, old_old: int) -> List[int]:
     """
     行做差。
 
@@ -58,7 +64,7 @@ def line_diff(mid, new, old, old_vid_view, halfday: int):
                  for n, w in [(int(new[_]), int(old[_]))
                               for _ in ['attention', 'zview', 'level', 'charge', 'likes']]]
 
-    ret = ret_udata + ret_fans + ret_vidview + ret_old_names + ret_other
+    ret: List[List] = ret_udata + ret_fans + ret_vidview + ret_old_names + ret_other
     return ret
 
 
@@ -71,7 +77,6 @@ def cha(today: dict, halfDago: dict, oneDago: dict, onehalfDago: dict):
     :param today: 当前数据
     :param oneDago: 半天前数据
     :param halfDago:，一天前数据
-
     """
     ret = []
     for mid in today.keys():
@@ -95,10 +100,9 @@ def diff(t_start, t_end, target_dir=paths.serv):
     :param t_end: 结束时间，字符串格式
     :param target_dir: 输出路径，cha 文件夹的上级目录
     """
-    print(f" 正在做差：\n\t 起始时间：{t_start}\n\t 终止时间：{t_end}\n\t 输出目录：{target_dir}")
-    # 初始数据
+    log(f" 正在做差：\n\t 起始时间：{t_start}\n\t 终止时间：{t_end}\n\t 输出目录：{target_dir}")
+    # 初始数据 遍历
     datalist = [fan_dict_data(_(t_start), target_dir) for _ in (onehalfdayago, onedayago, halfdayago)]
-    # 遍历
     time_list = time_str_list(t_start, t_end)
     # 对于每个时间点分别进行做差
     for i_time in time_list:
@@ -120,7 +124,13 @@ def diff(t_start, t_end, target_dir=paths.serv):
 
 
 if __name__ == "__main__":
-    diff("2020081123", "2020081123", r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\")
+    """
+    参考运行时间（基准=i7-8750@3.7GHz，输出存放于移动硬盘）
+    1个数据点（即刻）->4-5s
+    14-15个数据点（一周）->41-44s
+    约60个数据点（一月）->170-172s
+    """
+    diff("2020063023", "2020073123", r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\")
 
     import time
 

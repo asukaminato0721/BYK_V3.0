@@ -15,6 +15,8 @@ import re
 from os import listdir
 from os.path import isfile
 
+from typing import List
+
 exec("import csv")
 
 # def log(*_, end="\n"):
@@ -26,7 +28,7 @@ exec("import csv")
 log = print
 
 
-def fast_import(file_name: str, ext="csv"):
+def fast_import(file_name: str, ext="csv") -> List[list]:
     """
     导入文件。
 
@@ -73,7 +75,7 @@ def filename2itime(file_name: str):
     return ("20" + re.findall(r'20(\d{8})\.csv', file_name)[0])
 
 
-def stime2filename(file_time: str, file_type: str, dir_prefix: str = "", ext: str = ".csv"):
+def stime2filename(file_time: str, file_type: str, dir_prefix: str = "", ext: str = ".csv")->str:
     """
     给定字符串格式时间，构建相应的csv文件名。
     stime2filename(2020070411,"fan") -> fans\fans2020070411.csv
