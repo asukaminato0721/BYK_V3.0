@@ -57,9 +57,10 @@ def time_str_list(t_start: str, t_end: str, interval=12):
     return ret
 
 
-def smart_choice_time(time_=None):
+def smart_choice_time(time_=None, offset=0):
     """
     给出当前时间点上最后生成文件的时间
+    :param: offset:向前数几天
     :return:最后生成文件的时间
     """
     # stime_now = unix2str(time.time())
@@ -86,7 +87,7 @@ def smart_choice_time(time_=None):
     allowed = u_now - process_time - phase
     # 去掉尾数
     u_format = allowed // cycle * cycle
-    u_ret = u_format + phase
+    u_ret = u_format + phase + int(offset * 3600 * 24)
     # 转字符格式输出
     ret = unix2str(u_ret)
     return ret
