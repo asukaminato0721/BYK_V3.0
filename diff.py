@@ -42,6 +42,12 @@ def calu_vidview(new: int, old: int, old_old: int) -> List[int]:
     return [ret]
 
 
+def point_diff(new, old, keys, halfday):
+    old_and_news = [(int(new[_]), int(old.get(_, 0))) for _ in keys]
+    ret = [min(n, (n - w) * halfday) for n, w in old_and_news]
+    return ret
+
+
 def line_diff(mid, new, old, old_old, halfday: int):
     """
     行做差。
@@ -59,19 +65,13 @@ def line_diff(mid, new, old, old_old, halfday: int):
     # 1-3列:mid,名字 瞬时粉丝量
     ret_udata = [int(mid), new["name"], new["fans"]]
     # 4-5列：粉丝 视频数 的变化情况
-    ret_fans = [min(n, (n - w) * halfday)
-                for n, w in [(int(new[_]), int(old.get(_, 0)))
-                             for _ in ["fans", "vidcount"]]]
+    ret_fans = point_diff(new, old, ["fans", "vidcount"], halfday, )
     # 6列 播放数 要特殊处理
-    ret_vidview: List[int] = calu_vidview(
-        *[int(_.get("vidview", 0)) for _ in (new, old, old_old)])
+    ret_vidview: List[int] = calu_vidview(*[int(_.get("vidview", 0)) for _ in (new, old, old_old)])
     # 7列 旧名字 如果一样就是0
-    ret_old_names = [0 if new["name"] == old.get(
-        "name", "") else old.get("name", "")]
+    ret_old_names = [0 if new["name"] == old.get("name", "") else old.get("name", "")]
     # 8-12列 关注 专栏阅读 等级 充电 点赞
-    ret_other = [min(n, (n - w) * halfday)
-                 for n, w in [(int(new[_]), int(old.get(_, 0)))
-                              for _ in ['attention', 'zview', 'level', 'charge', 'likes']]]
+    ret_other = point_diff(new, old, ['attention', 'zview', 'level', 'charge', 'likes'], halfday)
 
     ret: List[List] = ret_udata + ret_fans + ret_vidview + ret_old_names + ret_other
     return ret
