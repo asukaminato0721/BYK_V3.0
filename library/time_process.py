@@ -35,6 +35,7 @@ def str2unix(stime: str):
 
 halfdayago = lambda stime: unix2str(str2unix(stime) - 3600 * 12)
 onedayago = lambda stime: unix2str(str2unix(stime) - 3600 * 24)
+onehalfdayago = lambda stime: unix2str(str2unix(stime) - 3600 * 36)
 oneweekago = lambda stime: unix2str(str2unix(stime) - 3600 * 24 * 7)
 
 
@@ -53,7 +54,7 @@ def time_str_list(t_start: str, t_end: str, interval=12):
     # 生成时间列表
     time_list = range(u_start, u_end + 1, interval * 3600)
     # 转换回字符串格式
-    ret = list(map(unix2str, time_list))
+    ret = [unix2str(_) for _ in time_list]
     return ret
 
 
