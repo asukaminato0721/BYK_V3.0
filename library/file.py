@@ -71,8 +71,13 @@ def fast_export(data, file_name, ext="csv"):
     return file_name
 
 
-def filename2itime(file_name: str):
-    return ("20" + re.findall(r'20(\d{8})\.csv', file_name)[0])
+def filename2time(file_name: str):
+    """
+    暂时用不上 以后可能有用
+
+    @param file_name:文件全名，如fans2020071023.csv
+    """
+    return re.search(r'2020\d{6}', file_name[:16]).group()
 
 
 def stime2filename(file_time: str, file_type: str, dir_prefix: str = "", ext: str = ".csv")->str:
