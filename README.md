@@ -29,7 +29,7 @@ if need_diff == "1":
 ### code
 存放py文件。
 
-### amine
+### anime
 动画输出。
 - 头像
 - fdata.csv

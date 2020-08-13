@@ -8,19 +8,19 @@ import requests
 
 from library.file import fast_import, log
 
-# TODO 改 paths
+import paths
 
-good_color_dir = r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\data\好颜色.csv"
+good_color_dir = paths.byk + "data\\好颜色.csv"
 good_color = dict(fast_import(good_color_dir))
 
 # 注销改名文件的路径
-logoff_dir = r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\data\logoff.json"
+logoff_dir = paths.serv + "redefine.json"
 logoff_pattern = "账号[已]?注销[0-9]*|[0-9]+_bili"
-with open(logoff_dir) as f:
+with open(logoff_dir, encoding='UTF-8') as f:
     logoff = json.load(f)
 
 # 输出目标路径
-export_dir = r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\amine"
+export_dir = paths.byk + "anime"
 
 # api地址
 api_url = "https://api.bilibili.com/x/web-interface/card?mid="

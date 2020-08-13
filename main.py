@@ -18,7 +18,7 @@ default_absolute_dir = paths.serv
 ups_dir = "temp/ups.csv"
 raw_dir = "temp/data_raw"
 inter_dir = "temp/data_yuedu.csv"
-data_dir = r"amine/data.csv"
+data_dir = r"anime/data.csv"
 
 # load config
 config = cfg.Config()
@@ -44,7 +44,7 @@ ups = ups.select_from_files(config.t_start(), config.t_end(), config.gainlost())
 fast_export([[int(_) for _ in ups]], ups_dir, "csv")
 log(f"输出up名单成功 共计{len(ups)}位")
 
-# video_list(elective,get amine/fdata)
+# video_list(elective,get anime/fdata)
 if config.gainlost() == "gain" and config.month():
     log("开始获取fdata信息")
     months = {config.t_start()[:6], time.strftime("%Y%m")}
@@ -63,7 +63,7 @@ inter = interpolate.table_interpolate(data_raw, config.gainlost())
 fast_export(inter, inter_dir)
 log("插值成功")
 
-# crawl headpic(get amine/data)
+# crawl headpic(get anime/data)
 log("开始获取头像信息")
 data_final = headpic(inter)
 fast_export(data_final, data_dir)

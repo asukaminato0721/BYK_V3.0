@@ -15,3 +15,4 @@ fans = serv + "fans\\"
 cha = serv + "cha\\"
 # config文件目录
 cfg = root + "cfg\\"
+byk = root + "byk\\"

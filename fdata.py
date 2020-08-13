@@ -8,8 +8,10 @@ import requests
 
 from library.file import log
 
+import paths
 url_template = "https://api.bilibili.com/x/article/archives?ids="
-out_file = r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\amine\fdata.csv"
+# TODO 若没有此文件夹则新建文件夹
+out_file = paths.byk + "anime\\fdata.csv"
 # out_file = "fdata.csv"
 
 

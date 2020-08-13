@@ -94,7 +94,7 @@ module_week_lostdata = r"data/temptate_week_lost.csv"
 def generate_config(gainlost, month_: int, up_count: int = 0):
     """
     生成config文件。
-    
+
     :thisday month_: 几月份，0视为周榜
     :thisday up_count: up人数。为零则是视为涨粉。
     :thisday template:模板配置文件数据
@@ -120,7 +120,7 @@ def generate_config(gainlost, month_: int, up_count: int = 0):
         # 窗口位置对齐
         cfg_[21][0] = str(int(1010 - 49.5 * up_count))
         cfg_[52][0] = str(int(-70 - 49.5 * up_count))
-    fast_export(cfg_, "amine/config.csv")
+    fast_export(cfg_, "anime/config.csv")
 
 
 if __name__ == "__main__":
