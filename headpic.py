@@ -6,15 +6,14 @@ import re
 import numpy as np
 import requests
 
-from library.file import fast_import, log
-
 import paths
+from library.file import fast_import, log
 
 good_color_dir = paths.byk + "data\\好颜色.csv"
 good_color = dict(fast_import(good_color_dir))
 
 # 注销改名文件的路径
-logoff_dir = paths.serv + "redefine.json"
+logoff_dir = paths.byk + "data/redefine.json"
 logoff_pattern = "账号[已]?注销[0-9]*|[0-9]+_bili"
 with open(logoff_dir, encoding='UTF-8') as f:
     logoff = json.load(f)
@@ -42,7 +41,8 @@ def crawl(up_data, index):
     """
     爬取用户名 计算颜色
 
-    :param up_data:插值完成后某up的数据
+    @param up_data:插值完成后某up的数据
+    @param index: 序号 只是为了输出数值好看而已
     :return: 输出文件中up的全部数据
     """
     # uid
@@ -92,5 +92,5 @@ def headpic(inter_data):
 
 
 if __name__ == "__main__":
-    ret = download_header(29762504, "http://i0.hdslb.com/bfs/face/4f6f5fddba459ae2b2ecc913ff9375db7c484eb4.jpg")
-    print(ret)
+    retttttt = download_header(29762504, "http://i0.hdslb.com/bfs/face/4f6f5fddba459ae2b2ecc913ff9375db7c484eb4.jpg")
+    print(retttttt)

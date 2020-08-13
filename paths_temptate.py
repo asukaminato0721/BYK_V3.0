@@ -2,7 +2,7 @@
 """
 本文件存放用到的各个路径
 """
-
+# 根目录
 import getpass
 root = "C:\\Users\\"+getpass.getuser()+"\\Downloads\\"
 
@@ -13,6 +13,9 @@ serv = root + "BiliServ\\"
 fans = serv + "fans\\"
 # cha 目录
 cha = serv + "cha\\"
-# config文件目录
+
+# config文件目录，不含文件名
 cfg = root + "cfg\\"
+
+# 工作文件目录；
 byk = root + "byk\\"
