@@ -8,10 +8,12 @@ def select_from_a_file(file_data, top_count):
     """从单个文件中搜索前若干名"""
     # 第四列：粉丝量，对应这里的key选择x的第四列（x[3]）
     # 要做粉丝榜以外的改这里可以很方便的处理
-    sorted_data = sorted(file_data[1:], key=lambda x: int(x[3]), reverse=top_count < 0)[:top_count]
+    # 我不知道这里到底应该是大于还是小于 如果输出结果不对的话改这里
+    sorted_data = sorted(file_data[1:], key=lambda x: int(x[3]), reverse=top_count > 0)[:top_count]
     concerned_updata = sorted_data[:abs(top_count)]
     ups = {_[0] for _ in concerned_updata}
     return ups
+
 
 def select_from_files(start, end, gainlost, cha_dir=paths.serv):
     """
@@ -30,7 +32,6 @@ def select_from_files(start, end, gainlost, cha_dir=paths.serv):
     ups = set.union(*[select_from_a_file(file, top_count=top_count) for file in file_data])
     fast_export([ups], "temp/ups.csv", "csv")
     return ups
-
 
 
 if __name__ == "__main__":
