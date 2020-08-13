@@ -45,24 +45,33 @@ def calu_vidview(new: int, old: int, old_old: int) -> List[int]:
 
 def point_diff(new, old, keys, halfday):
     old_and_news = [(int(new[_]), int(old.get(_, 0))) for _ in keys]
-    ret = [min(n, (n - w) * halfday) for n, w in old_and_news]
+    # 如果旧数据是负数 说明数据出现异常 直接置零
+    ret = [min(n, (n - o) * halfday) if o > 0 else 0 for n, o in old_and_news]
     return ret
 
 
-def line_diff(mid, new, old, old_old, halfday: int):
+def line_diff(mid, new, old, old_old, halfday: int) -> None or List:
     """
     行做差。
 
-    :param mid: 主键
-    :param new: 新表
-    :param old: 旧表（可能是半天之前或者一天之前）
-    :param halfday: 半天情况下是2，否则是1
-    :return: 做差结果
+    @param mid: 主键
+    @param new: 新表（当天）
+    @param old: 旧表（可能是半天之前或者一天之前）
+    @param old_old: 一天半之前的数据 目前只用于播放纠正
+    @param halfday: 半天情况下是2，否则是1
+    @return: 做差结果
     """
-    # 慢慢爬进来的情况，不予做差，否则当天会出现数据异常
-    if not (old and old_old and old.get('charge') == -1) and (int(new["fans"]) < 10000 or int(new["vidview"]) > 3):
-        return
-    # 以下为正常人（含新大佬）
+
+    head = 'name', 'fans', 'fans', 'vidcount', 'vidview', "oldname", 'attention', 'zview', 'level', 'charge', 'likes'
+    if old == old_old == {}:
+        # 前三天都没数据
+        if int(new["fans"]) > 10000 and int(new["vidview"]) < 3:
+            # 是新大佬
+            ret: List = [int(mid)] + [new.get(_, 0) for _ in head]
+        else:
+            # 磨上来的 这种大概率出错 直接给扔了
+            ret: None = None
+        return ret
     # 1-3列:mid,名字 瞬时粉丝量
     ret_udata = [int(mid), new["name"], new["fans"]]
     # 4-5列：粉丝 视频数 的变化情况
@@ -70,7 +79,7 @@ def line_diff(mid, new, old, old_old, halfday: int):
     # 6列 播放数 要特殊处理
     ret_vidview: List[int] = calu_vidview(*[int(_.get("vidview", 0)) for _ in (new, old, old_old)])
     # 7列 旧名字 如果一样就是0
-    ret_old_names = [0 if new["name"] == old.get("name", "") else old.get("name", "")]
+    ret_old_names = [0 if new["name"] == old.get("name", "") else old.get("name", 0)]
     # 8-12列 关注 专栏阅读 等级 充电 点赞
     ret_other = point_diff(new, old, ['attention', 'zview', 'level', 'charge', 'likes'], halfday)
 
@@ -84,9 +93,10 @@ def cha(today: dict, halfDago: dict, oneDago: dict, onehalfDago: dict):
     如 onedayago 无数据，与 halfdayago 做差并且数据乘二。
     如两个数据点都没有数据，认为是新入站用户，前一天数据认为是零。
 
-    :param today: 当前数据
-    :param oneDago: 半天前数据
-    :param halfDago:，一天前数据
+    @param today: 当前数据
+    @param oneDago: 半天前数据
+    @param halfDago:，一天前数据
+    @param onehalfDago: 一天半前数据
     """
     ret = []
     for mid in today.keys():
@@ -115,8 +125,8 @@ def export_data(datalist: List[dict], i_time) -> List[List]:
     export_head.insert(2, stime2filename(i_time, "fan_raw", ext=""))
     export_head[6] = "old_name"
 
-    # export_body = cha(datalist[-1], datalist[-2], datalist[-3], datalist[-4])
     # 需要当天数据，一天前数据，备用的半天前数据，用来计算的一天半前数据
+    # export_body = cha(datalist[-1], datalist[-2], datalist[-3], datalist[-4])
     export_body = cha(*datalist[:-5:-1])
     export = [export_head] + export_body
     return export
@@ -150,8 +160,12 @@ if __name__ == "__main__":
     1个数据点（即刻）->4-5s
     14-15个数据点（一周）->41-44s
     约60个数据点（一月）->169-172s
+    0813版本：
+    1个数据点：4.57,4.62,4.68
+    14-15个数据点（一周）->40s,43s.45s
+    约60个数据点（一月）->172s,179s，300s
     """
-    diff("2020081211", "2020081211",
+    diff("2020081223", "2020081223",
          r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\")
 
     import time
