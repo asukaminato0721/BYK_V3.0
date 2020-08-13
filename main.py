@@ -79,3 +79,4 @@ log("工作成功，保存配置文件")
 
 # TODO
 # 保存压缩包
+print(time.process_time())

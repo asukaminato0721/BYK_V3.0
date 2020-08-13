@@ -80,9 +80,9 @@ def daysdata(t_start: str, t_end: str, m_end: str, ups: list, fan_mode="gain"):
                 error_ups.add(up)
 
     # 缺数据情况报告
-    log(f"在统计月榜时发现的无数据账号共{len(error_ups)}位，如下：")
+    log(f"在统计榜单时发现的无数据账号共{len(error_ups)}位，如下：")
     for errup in error_ups:
-        log(f"    error mid:{errup}，月度累计值：{month_data[errup]}")
+        log(f"    error mid:{errup}，周期累计值：{month_data[errup]}")
         # for day in month_day_list:
         #     if data[day][errup] is None:
         #         lost_days.append(day)
