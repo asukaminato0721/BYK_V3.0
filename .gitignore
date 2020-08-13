@@ -8,7 +8,4 @@ temp/data_yuedu.csv
 *.log
 anime/
 paths.py
-anime/config.csv
-anime/data.7z
-anime/data.csv
 test_input
