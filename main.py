@@ -76,3 +76,6 @@ log("config.csv生成成功")
 
 # ending
 log("工作成功，保存配置文件")
+
+# TODO
+# 保存压缩包
