@@ -7,7 +7,5 @@ temp/data_yuedu.csv
 *.png
 *.log
 anime/
+amine/
 paths.py
-amine/config.csv
-amine/data.7z
-amine/data.csv
