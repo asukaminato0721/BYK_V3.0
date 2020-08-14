@@ -19,7 +19,7 @@ with open(logoff_dir, encoding='UTF-8') as f:
     logoff = json.load(f)
 
 # 输出目标路径
-export_dir = paths.amine
+export_dir = paths.anime
 
 # api地址
 api_url = "https://api.bilibili.com/x/web-interface/card?mid="
