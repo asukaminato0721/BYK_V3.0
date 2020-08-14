@@ -126,4 +126,4 @@ def generate_config(gainlost, month_: int, up_count: int = 0):
 
 
 if __name__ == "__main__":
-    generate_config(7, 100)
+    generate_config("gain", 7,0)
