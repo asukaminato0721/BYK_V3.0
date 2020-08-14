@@ -37,10 +37,10 @@ def calu_vidview(new: int, old: int, old_old: int) -> List[int]:
     参数分别为当天 一天或半天前 一天半前数据。
     若当天无数据 参数为零
     """
-    if new - old and old:
+    if new - old > 0 and old > 0:
         # 新老数据不同 且老数据不是零
         ret = new - old
-    elif old_old:
+    elif old_old > 0:
         # 老数据是零 更老数据不是零
         ret = new - old_old
     else:
