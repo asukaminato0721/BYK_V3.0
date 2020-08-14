@@ -85,6 +85,8 @@ class Config:
         fast_export(self.config, self.dir + "config.json")
 
 
+config = Config()
+
 module_gaindata = r"data/temptate_gain.csv"
 module_lostdata = r"data/temptate_lost.csv"
 module_week_gaindata = r"data/temptate_week_gain.csv"

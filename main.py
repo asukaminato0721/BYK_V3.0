@@ -2,6 +2,7 @@
 import time
 
 import cfg
+from cfg import config
 import dailydata
 import fdata
 import get_ups as ups
@@ -21,7 +22,8 @@ inter_dir = "temp/data_yuedu.csv"
 data_dir = r"anime/data.csv"
 
 # load config
-config = cfg.Config()
+# config = cfg.Config()
+
 
 fan_type = input("选择：涨粉=gain/掉粉=lost \n ")
 config.gainlost(fan_type)
