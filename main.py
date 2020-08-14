@@ -29,7 +29,8 @@ config.gainlost(fan_type)
 duration_type = int(input("选择持续时间：周榜=0/月榜=对应月份 \n "))
 config.month(duration_type)
 
-# diff(elective,get cha files)
+# diff(elective, get cha files)
+# TODO 0=不要，1=算一遍cha但跳过目录中已有算好的，2=强制算一遍所有cha即使有之前算好的也覆盖掉
 need_diff = input("是否做差？0=已有/1=要\n")
 if need_diff == "1":
     log("开始做差")

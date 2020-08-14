@@ -52,8 +52,8 @@ if __name__ == "__main__":
 
     # today = ds_belong(offset=-0.5)
     # yesterday = ds_belong(offset=-1.5)
-    today = "2020070923"
-    yesterday = "2020070823"
+    today = "2020070111"
+    yesterday = "2020063011"
 
     # 定时每天五点触发，若还没有 csv 文件则每 20min 再查一次
     os.system('echo [%date:~0,10% %time%] bigest_file(today) not yet >> Cal_cha.log')
