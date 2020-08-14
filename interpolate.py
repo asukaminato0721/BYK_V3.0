@@ -3,7 +3,6 @@ from cmath import tanh
 
 from scipy.interpolate import interp1d
 
-from cfg import config
 
 
 # from itertools import repeat
@@ -41,18 +40,18 @@ def row_interpolate(row, fan_mode):
     ret_body = pre_ret + [data[-1]] * 5 + [row[-1]] * 10
 
     # 掉粉去除正数
-    if config.gainlost() == "lost":
+    if fan_mode == "lost":
         ret_body = [0 if _ > 0 else _ for _ in ret_body]
     ret = [row[0]] + ret_body
     return ret
 
 
-def table_interpolate(data):
+def table_interpolate(data, fan_mode):
     """二维表插值"""
     head = data[0]
     body = data[1:]
     ret_head = [head[0]] + [_ for data in head[1:] for _ in [data] * 5] + [head[-1]] * 5
-    ret_body = [row_interpolate(_, config.gainlost()) for _ in body]
+    ret_body = [row_interpolate(_, fan_mode) for _ in body]
     ret = [ret_head] + ret_body
     return ret
 

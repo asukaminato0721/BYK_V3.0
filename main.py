@@ -55,7 +55,7 @@ if config.gainlost() == "gain" and config.month():
 
 # gather(get data-raw)
 log("开始采集涨掉粉数据")
-data_raw = dailydata.daysdata(*config.times(), ups, config.gainlost())
+data_raw = dailydata.daysdata(ups,config)
 fast_export(data_raw, r"temp/data-raw.csv")
 log("采集涨掉粉数据成功")
 
