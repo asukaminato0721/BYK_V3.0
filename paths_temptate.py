@@ -20,4 +20,4 @@ cfg = root + "cfg\\"
 # 工作文件目录；
 byk = root + "byk\\"
 
-anime=byk+"\\anime"
+anime = byk + 'anime\\'
