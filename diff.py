@@ -142,9 +142,9 @@ def diff(t_start, t_end, target_dir=paths.serv):
     """
     给定起止时间，每半天计算一个差文件
 
-    :param t_start: 开始时间，字符串格式
-    :param t_end: 结束时间，字符串格式
-    :param target_dir: 输出路径，cha 文件夹的上级目录
+    @param t_start: 开始时间，字符串格式
+    @param t_end: 结束时间，字符串格式
+    @param target_dir: 输出路径，cha 文件夹的上级目录
     """
     log(f" 正在做差：\n\t 起始时间：{t_start}\n\t 终止时间：{t_end}\n\t 输出目录：{target_dir}")
     # 初始数据 遍历

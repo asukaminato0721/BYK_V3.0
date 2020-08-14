@@ -12,6 +12,6 @@ If[Min@ImageDimensions@Safe[pic] > 240, pic = ImageResize[pic, 240]];
 (*print@(ToString[outputdir] <> ToString[uid] <> ".png");*)
 Export[ToString[outputdir] <> ToString[uid] <> ".png", pic];
 GSafe[p_] := If[Length@p < 1, {p, p, p}, p];
-hex[color_RGBColor] :=StringJoin["0x", IntegerString[Round[Level[color, 1]*255], 16, 2]];
-colorString[p_] :=  hex@Darker[RGBColor[GSafe@ImageMeasurements[Safe@p, "Mean"] ], .1];
+hex[color_RGBColor] := StringJoin["0x", IntegerString[Round[Level[color, 1] * 255], 16, 2]];
+colorString[p_] := hex@Darker[RGBColor[GSafe@ImageMeasurements[Safe@p, "Mean"] ], .1];
 Print[colorString@pic]

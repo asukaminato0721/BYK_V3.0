@@ -107,7 +107,7 @@ def get_fan_name(fan_dir, file_time):
     is_legal = lambda f: isfile(fan_dir + f) and re.match(rf"^fans{file_time}.*\.csv", f)
     legal_files = [f for f in listdir(fan_dir) if is_legal(f)]
     if not legal_files:
-        raise FileNotFoundError(fan_dir + f"fans{file_time}*.csv not exist.")
+        raise FileNotFoundError(fan_dir + f"fans{file_time}-*.csv not exist.")
     file2size_dict = {f: os.stat(fan_dir + f).st_size for f in legal_files}
     ret = max(file2size_dict, key=file2size_dict.get)
     # 小文件也视作异常

@@ -47,7 +47,7 @@ def crawl(up_data, index):
     """
     # userdata
     uid = up_data[0]
-    log(f"\t{index}:正在处理{uid}", end="" if index % 5 else "\n")
+    log(f"\t{index:<3}:正在处理{uid:<8}", end="" if index % 5 else "\n")
     udata = up_data[1:]
     try:
         # 主要处理过程，前后杂事多，单独写一个函数
