@@ -3,17 +3,14 @@
 这是最复杂的文件之一。
 """
 import time
+from typing import Dict, List
 
 import paths
+from cfg import Config
 from library.file import replaceAll, log, stime2filename, fast_import
 from library.time_process import time_str_list, str2tuple
 
 pre = paths.serv
-# pre = r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\"
-
-
-if __name__ == "__main__":
-    pass
 
 week_eng2chs = {"Mon": "周一", "Tue": "周二", "Wed": "周三", "Thu": "周四", "Fri": "周五",
                 "Sat": "周六", "Sun": "周日", "11时": "日", "23时": "夜"}
@@ -45,30 +42,96 @@ def dailydata(date, ups, target="fan"):
     # return {ups: None for ups in ups}
 
 
-def daysdata(t_start: str, t_end: str, m_end: str, ups: list, fan_mode="gain"):
+def daysdata(ups: list, config: Config):
     """
         统计每日数据，并且报告输出情况。还负责得到月度数据。
-        :param ups: 要统计的up名单列表
-        :param fan_mode: 涨粉还是掉粉
-        :param t_start: 统计开始时间
-        :param m_end: 月度结束时间，周榜为None
-        :param t_end: 统计结束时间
-        :return: 每个up一行，汇总各天数据+月度数据。
+        @param config: 涨掉粉变量
+        @param ups: 要统计的up名单列表
+        @param t_start: 统计开始时间
+        @param m_end: 月度结束时间，周榜为None
+        @param t_end: 统计结束时间
+        @return: 每个up一行，汇总各天数据+月度数据。
         """
-    # 周榜或不足月情况
+    # 时间处理
+    m_end, t_end, t_start = config.times()
+    day_list, day_names = get_time(m_end, t_end, t_start)
+    # 存放的数据格式：{day_name:{up:data of the day}}
+    # 月内数据
+    data = {date: dailydata(date, ups) for date in day_list["month"]}
+    # 统计月度数据，缺数据情况报告
+    month_data = report_month_data(data, ups, day_list["month"], day_list)
+    # 取得本月余下数据
+    data.update({date: dailydata(date, ups) for date in day_list["rest"]})
+    # 输出
+    ret = get_ret(data, day_list["all"], day_names, month_data, ups, config)
+    return ret
+
+
+def get_time(m_end, t_end, t_start):
     if m_end is None or int(m_end) > int(t_end):
         m_end = t_end
+    day_list = {"month": time_str_list(t_start, m_end), "rest": time_str_list(m_end, t_end)[1:]}
+    day_list["all"] = day_list["month"] + day_list["rest"]
+    day_names: list = [eng2chs_rule(dates) for dates in time_str_list(t_start, t_end)]
+    return day_list, day_names
 
-    month_day_list = time_str_list(t_start, m_end)
-    month_day_names = [eng2chs_rule(dates) for dates in month_day_list]
-    # 存放的数据格式：{day_name:{up:data of the day}}
-    # 先计算月（周）内的粉丝变化情况
-    data = {date: dailydata(date, ups) for date in month_day_list}
 
-    # 统计月度数据
+def get_ret(data, day_name_keys: list, day_names: list, month_data, ups, config):
+    """
+
+    @param config: 月份
+    @param data: 总数据
+    @param day_name_keys: 月份名字
+    @param day_names: 月份名字正文
+    @param month_data:
+    @param ups:up名单
+
+    """
+    # 按照月份数据排序
+    sorted_ups = sorted(ups, key=month_data.get, reverse=True)
+    # 准备生成返回值
+    # 表头
+    ret_head = get_head(day_names, config)
+    # 表体，每个up一行，相当于最后输出的一列。
+    ret_body = [[up] + get_up_data(data, day_name_keys, up) + [month_data[up]] for up in
+                sorted_ups]
+    ret = ret_head + ret_body
+    return ret
+
+
+def get_up_data(data, day_name_keys, up):
+    ret = [data[day_name_key].get(up, 0) for day_name_key in day_name_keys]
+    return ret
+
+
+def get_head(day_names, config: Config):
+    # 最后总变化榜单行首内容
+    month_title = f"{'月度' if config.month() else '一周'}净{'涨粉' if config.gainlost() == 'gain' else '掉粉'}"
+    ret_head = [[".png"] + day_names + [month_title]]
+    return ret_head
+
+
+def report_month_data(data: Dict[str, dict], ups: List[int], month_day_list: List[str], day_list):
+    """
+    统计月度数据，报告漏数据情况
+
+    @param ups: up名单
+    @param data: 存放每日每个up的数据
+    @param month_day_list:List[day_name] 月内日期
+    """
+    error_ups, month_data = get_month_data(data, day_list["month"], ups)
+    log(f"在统计榜单时发现的无数据账号共{len(error_ups)}位，如下：")
+    for errup in error_ups:
+        log(f"error mid:{errup}，周期累计值：{error_ups[errup]}")
+        lost_days = [day for day in month_day_list if errup not in data[day]]
+        log(f"  合计{len(lost_days)}个半天:", "\t".join(date[4:] for date in lost_days))
+    return month_data
+
+
+def get_month_data(data, month_day_list, ups):
     # {up:month_data}
     month_data = {}
-    error_ups = set()
+    error_ups: Dict["up":"month_data"] = {}
     for up in ups:
         month_data[up] = 0
         for date in month_day_list:
@@ -77,39 +140,8 @@ def daysdata(t_start: str, t_end: str, m_end: str, ups: list, fan_mode="gain"):
                 month_data[up] += data[date].get(up, None) // 2
             except (TypeError, KeyError):
                 # 说明取到的是None，当天没有数据
-                error_ups.add(up)
-
-    # 缺数据情况报告
-    log(f"在统计榜单时发现的无数据账号共{len(error_ups)}位，如下：")
-    for errup in error_ups:
-        log(f"    error mid:{errup}，周期累计值：{month_data[errup]}")
-        # for day in month_day_list:
-        #     if data[day][errup] is None:
-        #         lost_days.append(day)
-        lost_days = [day for day in month_day_list if errup not in data[day]]
-        log(f"合计{len(lost_days)}个半天:", "\t".join(date[4:] for date in lost_days))
-
-    # 取得本月余下数据
-    rest_day_list = time_str_list(m_end, t_end)[1:]
-    rest_day_names = [eng2chs_rule(dates) for dates in rest_day_list]
-    data.update({date: dailydata(date, ups) for date in rest_day_list})
-
-    # 输出
-    # 按照月份数据排序
-    sorted_ups = sorted(ups, key=lambda v: month_data[v], reverse=True)
-
-    day_name_keys = month_day_list + rest_day_list
-    day_names = month_day_names + rest_day_names
-
-    # 准备生成返回值
-    # 表头
-    ret_head = [[".png"] + day_names + ["月度净" + ("涨粉" if fan_mode == "gain" else "掉粉")]]
-
-    # 表体，每个up一行，相当于最后输出的一列。
-    ret_body = [[up] + [data[day_name_key].get(up, 0) for day_name_key in day_name_keys] + [month_data[up]] for up in
-                sorted_ups]
-    ret = ret_head + ret_body
-    return ret
+                error_ups[up] = month_data[up]
+    return error_ups, month_data
 
 
 if __name__ == "__main__":
