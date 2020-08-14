@@ -37,9 +37,15 @@ def calu_vidview(new: int, old: int, old_old: int) -> List[int]:
     参数分别为当天 一天或半天前 一天半前数据。
     若当天无数据 参数为零
     """
-    # 新入站大佬说明前三个数据点都没有数据 也就是old 和 old_old 都是零
-    # 不管new减去啥都是new自己
-    ret: int = new - old if new - old else new - old_old if old_old else 0
+    if new - old and old:
+        # 新老数据不同 且老数据不是零
+        ret = new - old
+    elif old_old:
+        # 老数据是零 更老数据不是零
+        ret = new - old_old
+    else:
+        # 两个老数据都是零，不知道历史值
+        ret = 0
     return [ret]
 
 
@@ -113,10 +119,10 @@ def cha(today: dict, halfDago: dict, oneDago: dict, onehalfDago: dict):
     return ret
 
 
-def export_data(datalist: List[dict], i_time) -> List[List]:
+def export_data(datalist: List[dict], i_time: str) -> List[List]:
     """
-    :@param datalist:数据列表 实际上只需要最后4项
-    :@param i_time:字符串时间
+    @param datalist:数据列表 实际上只需要最后4项
+    @param i_time:字符串时间
     """
     # 表头
     # mid, today_name, fans2020080611, fans, vidcount, vidview, oldname, attention, zview, level,charge, likes
@@ -165,7 +171,7 @@ if __name__ == "__main__":
     14-15个数据点（一周）->40s,43s.45s
     约60个数据点（一月）->172s,179s，300s
     """
-    diff("2020081223", "2020081223",
+    diff("2020070111", "2020070111",
          r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\")
 
     import time
