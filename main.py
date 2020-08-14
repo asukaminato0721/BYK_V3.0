@@ -32,13 +32,13 @@ duration_type = int(input("选择持续时间：周榜=0/月榜=对应月份 \n 
 config.month(duration_type)
 
 # diff(elective, get cha files)
-mode = input("是否做差？0=已有/1=强制/其它=自动\n")
-if mode != "0":
-    log("开始做差")
-    diff(config.t_start(), config.t_end(), force=mode == "1")
-    log("做差完成")
-else:
+mode = input("是否做差？skip(0)=跳过；force(1)=强制；其它=自动\n")
+if mode in ("skip", "0"):
     log("跳过做差")
+else:
+    log("开始做差")
+    diff(config.t_start(), config.t_end(), force=mode in ("force", "1"))
+    log("做差完成")
 
 # search(get ups_)
 log("开始搜索up名单")
