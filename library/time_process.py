@@ -80,7 +80,7 @@ def smart_choice_time(time_=time.time(), offset=0):
         u_now = time_
 
     # 前推 4 小时，任何4小时前没有开始的数据都应该没出来
-    process_time = 3600 * 6
+    process_time = 3600 * 3
     # 偏置 3 小时 测试结果别问我为啥
     phase = 3600 * 3
     #  周期 12 小时
