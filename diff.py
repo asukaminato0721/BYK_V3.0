@@ -3,6 +3,7 @@
 做差相关函数。
 共 81 行。
 """
+import os
 from typing import List
 
 import paths
@@ -138,13 +139,14 @@ def export_data(datalist: List[dict], i_time: str) -> List[List]:
     return export
 
 
-def diff(t_start, t_end, target_dir=paths.serv):
+def diff(t_start, t_end, force: bool = True, target_dir=paths.serv):
     """
     给定起止时间，每半天计算一个差文件
 
     @param t_start: 开始时间，字符串格式
     @param t_end: 结束时间，字符串格式
     @param target_dir: 输出路径，cha 文件夹的上级目录
+    @param force: 是否强制生成 否则自动跳过已有文件
     """
     log(f" 正在做差：\n\t 起始时间：{t_start}\n\t 终止时间：{t_end}\n\t 输出目录：{target_dir}")
     # 初始数据 遍历
@@ -154,9 +156,10 @@ def diff(t_start, t_end, target_dir=paths.serv):
     # 对于每个时间点分别进行做差
     for i_time in time_list:
         datalist.append(fan_dict_data(i_time, target_dir))
-        export = export_data(datalist, i_time)
         export_dir = stime2filename(i_time, "cha", target_dir)
-        fast_export(export, export_dir)
+        if not os.path.exists(export_dir) or force:
+            export = export_data(datalist, i_time)
+            fast_export(export, export_dir)
         print(f"export file at {export_dir}")
 
 
@@ -172,7 +175,7 @@ if __name__ == "__main__":
     约60个数据点（一月）->172s,179s，300s
     """
     diff("2020070111", "2020070111",
-         r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\")
+         target_dir=r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\")
 
     import time
 

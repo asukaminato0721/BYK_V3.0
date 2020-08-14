@@ -2,12 +2,12 @@
 import time
 
 import cfg
-from cfg import config
 import dailydata
 import fdata
 import get_ups as ups
 import interpolate
 import paths
+from cfg import config
 from diff import diff
 # global variable
 from headpic import headpic
@@ -32,11 +32,10 @@ duration_type = int(input("选择持续时间：周榜=0/月榜=对应月份 \n 
 config.month(duration_type)
 
 # diff(elective, get cha files)
-# TODO 0=不要，1=算一遍cha但跳过目录中已有算好的，2=强制算一遍所有cha即使有之前算好的也覆盖掉
-need_diff = input("是否做差？0=已有/1=要\n")
-if need_diff == "1":
+mode = input("是否做差？0=已有/1=强制/其它=自动\n")
+if mode != "0":
     log("开始做差")
-    diff(config.t_start(), config.t_end())
+    diff(config.t_start(), config.t_end(), force=mode == "1")
     log("做差完成")
 else:
     log("跳过做差")
@@ -62,7 +61,7 @@ log("采集涨掉粉数据成功")
 
 # interpolate (toget data-yuedu)
 log("开始插值")
-inter = interpolate.table_interpolate(data_raw, config.gainlost())
+inter = interpolate.table_interpolate(data_raw)
 fast_export(inter, inter_dir)
 log("插值成功")
 
