@@ -15,9 +15,12 @@ fans = serv + "fans\\"
 cha = serv + "cha\\"
 
 # config文件目录，不含文件名
-cfg = root + "cfg\\"
+cfg = root + "byk\\"
 
 # 工作文件目录；
 byk = root + "byk\\"
 
-anime = byk + 'anime\\'
+anime = byk + "anime\\"
+
+
+
