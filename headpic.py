@@ -12,10 +12,9 @@ from library.file import fast_import, log
 good_color_dir = paths.byk + "data\\好颜色.csv"
 good_color = dict(fast_import(good_color_dir))
 
-# 注销改名文件的路径
-logoff_dir = paths.byk + "data/redefine.json"
+# 注销改名文件数据
 logoff_pattern = "账号[已]?注销[0-9]*|[0-9]+_bili|bili_[0-9]+"
-with open(logoff_dir, encoding='UTF-8') as f:
+with open(paths.logoff_dir, encoding='UTF-8') as f:
     logoff = json.load(f)
 
 # 输出目标路径
