@@ -14,7 +14,7 @@ good_color = dict(fast_import(good_color_dir))
 
 # 注销改名文件的路径
 logoff_dir = paths.byk + "data/redefine.json"
-logoff_pattern = "账号[已]?注销[0-9]*|[0-9]+_bili"
+logoff_pattern = "账号[已]?注销[0-9]*|[0-9]+_bili|bili_[0-9]+"
 with open(logoff_dir, encoding='UTF-8') as f:
     logoff = json.load(f)
 
@@ -89,7 +89,7 @@ def get_name(content):
     elif uid in logoff:
         name += f"（原：{logoff[uid]}）"
     elif re.search(logoff_pattern, name) is not None:
-        log(f"！！！新发现注销帐号：{name}，用户uid:{uid}")
+        log(f"  新发现注销帐号：{name}，用户uid:{uid}")
     return name
 
 
