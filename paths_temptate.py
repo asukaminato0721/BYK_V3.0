@@ -4,9 +4,10 @@
 """
 # 根目录
 import getpass
-root = "C:\\Users\\"+getpass.getuser()+"\\Downloads\\"
+root = "C:\\Users\\" + getpass.getuser() + "\\Downloads\\"
 
 # 文件存放目录
+"存放fan，cha文件等"
 serv = root + "BiliServ\\"
 
 # fan目录
@@ -20,7 +21,8 @@ cfg = root + "byk\\"
 # 工作文件目录；
 byk = root + "byk\\"
 
-anime = byk + "anime\\"
+# 输出实际播放动画的文件夹目录
+anime = byk + 'anime\\'
 
-
-
+# 注销用户文件redefine.json
+logoff_dir = r"D:\OneDrive\LiWorkshop\BYK_V3.0\data\redefine.json"
