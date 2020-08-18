@@ -56,11 +56,11 @@ if __name__ == "__main__":
     # yesterday = "2020063011"
 
     # 定时每天五点触发，若还没有 csv 文件则每 20min 再查一次
-    os.system('echo [%date:~0,10% %time%] bigest_file(today) not yet >> Cal_cha.log')
-    while biggest_file(today) == -1:
+    while(biggest_file(today) == -1):
+        os.system('echo [%date:~0,10% %time%] biggest_file(today) not yet >> Cal_cha.log')
         time.sleep(1200)
 
-    os.system(f'echo bigest_file: {biggest_file(today)} {biggest_file(yesterday)} >> Cal_cha.log')
+    os.system(f'echo biggest_file: {biggest_file(today)} {biggest_file(yesterday)} >> Cal_cha.log')
 
     try:
         diff(today, today, paths.serv)
