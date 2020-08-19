@@ -12,13 +12,13 @@ import paths
 from diff import diff
 
 
-def ds_belong(tim, offset = 0):
+def ds_belong(offset = 0):
     """
     通过时间确定归属时间戳（从10~22点都属于11am的，22~10属于23pm的）
     输入：unix 时间数，offset 以天为单位
     输出：所属 taskId 字符串
     """
-    tm = tim + offset*3600*24
+    tm = time.time() + offset*3600*24
     now = time.localtime(tm)
     hour = int(time.strftime("%H", now))
     if(hour>=10 and hour<=21):
@@ -33,8 +33,7 @@ def ds_belong(tim, offset = 0):
 
 
 def biggest_file(t):
-    onlyfiles = (f for f in listdir(paths.fans) if
-                 isfile(join(paths.fans, f)) and re.match(r'^fans' + t + '(.*)\.csv', f))
+    onlyfiles = [f for f in listdir(paths.fans) if isfile(join(paths.fans, f)) and re.match(r'^fans' + t + '(.*)\.csv', f)]
     if(len(onlyfiles)>0):
         fsize = {f: os.stat(paths.fans + f).st_size for f in onlyfiles}
         # 取体积最大的，若为零则忽略该文件
