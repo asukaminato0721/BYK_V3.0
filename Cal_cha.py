@@ -7,38 +7,44 @@ from os import listdir
 from os.path import isfile, join
 
 import paths
-from library.time_process import smart_choice_time as ds_belong
+# from library.time_process import smart_choice_time as ds_belong
 
 from diff import diff
 
-# import ppp
-#     now = time.localtime(tm)
-#     hour = int(time.strftime("%H", now))
-# def ds_belong(t, offset=0):
-#     tm = t + offset * 3600 * 24
-#     if (hour >= 11 and hour <= 22):
-#         hourt = 11
-#     else:
-#         hourt = 23
-#     if (hour < 11):
-#         return (time.strftime("%Y%m%d", time.localtime(tm - 3600 * 12)) + str(hourt))
-#     else:
-#         return (time.strftime("%Y%m%d", now) + str(hourt))
+
+def ds_belong(tim, offset = 0):
+    """
+    通过时间确定归属时间戳（从10~22点都属于11am的，22~10属于23pm的）
+    输入：unix 时间数，offset 以天为单位
+    输出：所属 taskId 字符串
+    """
+    tm = tim + offset*3600*24
+    now = time.localtime(tm)
+    hour = int(time.strftime("%H", now))
+    if(hour>=10 and hour<=21):
+        hourt = 11
+    else:
+        hourt = 23
+    if(hour<10):
+        return(time.strftime("%Y%m%d", time.localtime(tm-3600*12))+str(hourt))
+    else:
+        return(time.strftime("%Y%m%d", now)+str(hourt))
+
 
 
 def biggest_file(t):
     onlyfiles = (f for f in listdir(paths.fans) if
                  isfile(join(paths.fans, f)) and re.match(r'^fans' + t + '(.*)\.csv', f))
-    if onlyfiles:
+    if(len(onlyfiles)>0):
         fsize = {f: os.stat(paths.fans + f).st_size for f in onlyfiles}
         # 取体积最大的，若为零则忽略该文件
-        fmax = max(fsize, key=fsize.get)
-        if fsize[fmax] < 1024:  # 单位字节
-            return -1
+        fmax = max(fsize, key = fsize.get)
+        if(fsize[fmax] < 1024): # 单位字节
+            return(-1)
         else:
-            return fmax
+            return(fmax)
     else:
-        return -1
+        return(-1)
 
 
 if __name__ == "__main__":
