@@ -21,11 +21,11 @@ def ds_belong(offset = 0):
     tm = time.time() + offset*3600*24
     now = time.localtime(tm)
     hour = int(time.strftime("%H", now))
-    if(hour>=10 and hour<=21):
+    if(hour>=11 and hour<=22):
         hourt = 11
     else:
         hourt = 23
-    if(hour<10):
+    if(hour<11):
         return(time.strftime("%Y%m%d", time.localtime(tm-3600*12))+str(hourt))
     else:
         return(time.strftime("%Y%m%d", now)+str(hourt))
@@ -38,10 +38,18 @@ def biggest_file(t):
         fsize = {f: os.stat(paths.fans + f).st_size for f in onlyfiles}
         # 取体积最大的，若为零则忽略该文件
         fmax = max(fsize, key = fsize.get)
-        if(fsize[fmax] < 1024): # 单位字节
+        if(fsize[fmax] < 5024000): # 单位字节
             return(-1)
         else:
-            return(fmax)
+            # 还得测试文件是否正在写入中以防不可读
+            try:
+                with open(join(paths.fans, fmax)) as fp:
+                    return(fmax)
+
+            except IOError as err:
+                return(-1)
+            # 其它类型错误是否放行：否
+            return(-1)
     else:
         return(-1)
 
@@ -79,8 +87,11 @@ if __name__ == "__main__":
     res = str(subprocess.check_output('tail -3 Cal_cha.log', shell=True).strip())
     print("res=", res)
 
-    if re.match(r'error', res) or re.match(r'::', res) or re.findall(r'quitting', res):
+    # 回滚，因为 match 只搜索一行
+    if (len(re.findall(r'error',res)) > 0 or len(re.findall(r'::',res)) > 0 or len(re.findall(r'quitting',res)) > 0):
         os.system('echo [%date:~0,10% %t%] ErrorEnd Cal_cha.wl >> Cal_cha.log')
         sys.exit(1)
     else:
         os.system('echo [%date:~0,10% %t%] Fin Cal_cha.wl >> Cal_cha.log')
+
+
