@@ -7,38 +7,51 @@ from os import listdir
 from os.path import isfile, join
 
 import paths
-from library.time_process import smart_choice_time as ds_belong
+# from library.time_process import smart_choice_time as ds_belong
 
 from diff import diff
 
-# import ppp
-#     now = time.localtime(tm)
-#     hour = int(time.strftime("%H", now))
-# def ds_belong(t, offset=0):
-#     tm = t + offset * 3600 * 24
-#     if (hour >= 11 and hour <= 22):
-#         hourt = 11
-#     else:
-#         hourt = 23
-#     if (hour < 11):
-#         return (time.strftime("%Y%m%d", time.localtime(tm - 3600 * 12)) + str(hourt))
-#     else:
-#         return (time.strftime("%Y%m%d", now) + str(hourt))
+
+def ds_belong(offset = 0):
+    """
+    通过时间确定归属时间戳（从10~22点都属于11am的，22~10属于23pm的）
+    输入：unix 时间数，offset 以天为单位
+    输出：所属 taskId 字符串
+    """
+    tm = time.time() + offset*3600*24
+    now = time.localtime(tm)
+    hour = int(time.strftime("%H", now))
+    if(hour>=11 and hour<=22):
+        hourt = 11
+    else:
+        hourt = 23
+    if(hour<11):
+        return(time.strftime("%Y%m%d", time.localtime(tm-3600*12))+str(hourt))
+    else:
+        return(time.strftime("%Y%m%d", now)+str(hourt))
+
 
 
 def biggest_file(t):
-    onlyfiles = (f for f in listdir(paths.fans) if
-                 isfile(join(paths.fans, f)) and re.match(r'^fans' + t + '(.*)\.csv', f))
-    if onlyfiles:
+    onlyfiles = [f for f in listdir(paths.fans) if isfile(join(paths.fans, f)) and re.match(r'^fans' + t + '(.*)\.csv', f)]
+    if(len(onlyfiles)>0):
         fsize = {f: os.stat(paths.fans + f).st_size for f in onlyfiles}
         # 取体积最大的，若为零则忽略该文件
-        fmax = max(fsize, key=fsize.get)
-        if fsize[fmax] < 1024:  # 单位字节
-            return -1
+        fmax = max(fsize, key = fsize.get)
+        if(fsize[fmax] < 5024000): # 单位字节
+            return(-1)
         else:
-            return fmax
+            # 还得测试文件是否正在写入中以防不可读
+            try:
+                with open(join(paths.fans, fmax)) as fp:
+                    return(fmax)
+
+            except IOError as err:
+                return(-1)
+            # 其它类型错误是否放行：否
+            return(-1)
     else:
-        return -1
+        return(-1)
 
 
 if __name__ == "__main__":
@@ -56,11 +69,11 @@ if __name__ == "__main__":
     # yesterday = "2020063011"
 
     # 定时每天五点触发，若还没有 csv 文件则每 20min 再查一次
-    os.system('echo [%date:~0,10% %time%] bigest_file(today) not yet >> Cal_cha.log')
-    while biggest_file(today) == -1:
+    while(biggest_file(today) == -1):
+        os.system('echo [%date:~0,10% %time%] biggest_file(today) not yet >> Cal_cha.log')
         time.sleep(1200)
 
-    os.system(f'echo bigest_file: {biggest_file(today)} {biggest_file(yesterday)} >> Cal_cha.log')
+    os.system(f'echo biggest_file: {biggest_file(today)} {biggest_file(yesterday)} >> Cal_cha.log')
 
     try:
         diff(today, today, paths.serv)
@@ -74,8 +87,11 @@ if __name__ == "__main__":
     res = str(subprocess.check_output('tail -3 Cal_cha.log', shell=True).strip())
     print("res=", res)
 
-    if re.match(r'error', res) or re.match(r'::', res) or re.findall(r'quitting', res):
+    # 回滚，因为 match 只搜索一行
+    if (len(re.findall(r'error',res)) > 0 or len(re.findall(r'::',res)) > 0 or len(re.findall(r'quitting',res)) > 0):
         os.system('echo [%date:~0,10% %t%] ErrorEnd Cal_cha.wl >> Cal_cha.log')
         sys.exit(1)
     else:
         os.system('echo [%date:~0,10% %t%] Fin Cal_cha.wl >> Cal_cha.log')
+
+
