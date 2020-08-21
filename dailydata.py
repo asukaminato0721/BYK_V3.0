@@ -47,14 +47,11 @@ def daysdata(ups: list, config: Config):
         统计每日数据，并且报告输出情况。还负责得到月度数据。
         @param config: 涨掉粉变量
         @param ups: 要统计的up名单列表
-        @param t_start: 统计开始时间
-        @param m_end: 月度结束时间，周榜为None
-        @param t_end: 统计结束时间
         @return: 每个up一行，汇总各天数据+月度数据。
         """
     # 时间处理
-    m_end, t_end, t_start = config.times()
-    day_list, day_names = get_time(m_end, t_end, t_start)
+    t_start, t_end, m_end = config.times()
+    day_list, day_names = get_time(t_start, t_end, m_end)
     # 存放的数据格式：{day_name:{up:data of the day}}
     # 月内数据
     data = {date: dailydata(date, ups) for date in day_list["month"]}
@@ -67,7 +64,7 @@ def daysdata(ups: list, config: Config):
     return ret
 
 
-def get_time(m_end, t_end, t_start):
+def get_time(t_start, t_end, m_end):
     if m_end is None or int(m_end) > int(t_end):
         m_end = t_end
     day_list = {"month": time_str_list(t_start, m_end), "rest": time_str_list(m_end, t_end)[1:]}
@@ -115,6 +112,7 @@ def report_month_data(data: Dict[str, dict], ups: List[int], month_day_list: Lis
     """
     统计月度数据，报告漏数据情况
 
+    @param day_list:
     @param ups: up名单
     @param data: 存放每日每个up的数据
     @param month_day_list:List[day_name] 月内日期

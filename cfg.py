@@ -78,7 +78,7 @@ class Config:
         注意输出是按照顺序的
         :return:
         """
-        return map(self.config["dates"].get, ["t_start", "t_end", "m_end"])
+        return self.t_start(), self.t_end(), self.m_end()
         # return [self.config["dates"][_] for _ in ["t_start", "t_end", "m_end"]]
 
     def export(self):
@@ -126,4 +126,4 @@ def generate_config(gainlost, month_: int, up_count: int = 0):
 
 
 if __name__ == "__main__":
-    generate_config("gain", 7,0)
+    generate_config("gain", 7, 0)

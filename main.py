@@ -55,13 +55,13 @@ if config.gainlost() == "gain" and config.month():
 
 # gather(get data-raw)
 log("开始采集涨掉粉数据")
-data_raw = dailydata.daysdata(ups,config)
+data_raw = dailydata.daysdata(ups, config)
 fast_export(data_raw, r"temp/data-raw.csv")
 log("采集涨掉粉数据成功")
 
 # interpolate (toget data-yuedu)
 log("开始插值")
-inter = interpolate.table_interpolate(data_raw)
+inter = interpolate.table_interpolate(data_raw, config.gainlost())
 fast_export(inter, inter_dir)
 log("插值成功")
 
