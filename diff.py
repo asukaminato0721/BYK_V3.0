@@ -4,6 +4,7 @@
 共 81 行。
 """
 import os
+# from collections import namedtuple
 from typing import List
 
 import paths
@@ -11,11 +12,26 @@ from library.file import stime2filename, fast_export, fast_import, log
 from library.time_process import onedayago, halfdayago, time_str_list, onehalfdayago
 
 
-def fan_dict_data(fan_name: str, target_dir):
-    """给出指定文件名的 fan 文件数据。"""
+def fan_dict_data(fan_name: str, target_dir) -> dict:
+    """
+
+    给出指定文件名的 fan 文件数据,dict格式
+    @return:{mid:{fans,vidcount,vidview,name,attention,zview,level,charge,likes,rtime,zcount,album,audio}}
+    """
     datalist = fast_import(stime2filename(fan_name, "fan", target_dir))
     ret = {_[0]: dict(zip(datalist[0][1:], _[1:])) for _ in datalist[1:]}
     return ret
+
+
+# class named_tuple:
+#     tpl = namedtuple("data", (
+#         "fans", "vidcount", "vidview", "name", "attention", "zview", "level", "charge", "likes", "rtime", "zcount",
+#         "album",
+#         "audio"))
+#
+#     def fan_tuple_data(self, fan_name: str, target_dir) -> namedtuple:
+#         datalist = fast_import(stime2filename(fan_name, "fan", target_dir))
+#         ret = {_[0]: self.tpl(*_[1:]) for _ in datalist[1:]}
 
 
 '''
@@ -88,7 +104,7 @@ def line_diff(mid, new, old, old_old, halfday: int) -> None or List:
     # 7列 旧名字 如果一样就是0
     ret_old_names = [0 if new["name"] == old.get("name", "") else old.get("name", 0)]
     # 8-12列 关注 专栏阅读 等级 充电 点赞
-    ret_other = point_diff(new, old, ['attention', 'zview', 'level', 'charge', 'likes'], halfday)
+    ret_other = point_diff(new, old, ('attention', 'zview', 'level', 'charge', 'likes'), halfday)
 
     ret: List[List] = ret_udata + ret_fans + ret_vidview + ret_old_names + ret_other
     return ret
@@ -174,7 +190,7 @@ if __name__ == "__main__":
     14-15个数据点（一周）->40s,43s.45s
     约60个数据点（一月）->172s,179s，300s
     """
-    diff("2020070111", "2020070111",
+    diff("2020082111", "2020082111",
          target_dir=r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\")
 
     import time
