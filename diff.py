@@ -53,7 +53,7 @@ def calu_vidview(new: int, old: int, old_old: int) -> List[int]:
 def point_diff(new, old, keys, halfday):
     old_and_news = [(int(new[_]), int(old.get(_, 0))) for _ in keys]
     # 如果旧数据是负数 说明数据出现异常 直接置零
-    ret = [min(n, (n - o) * halfday) if o > 0 else 0 for n, o in old_and_news]
+    ret = [min(n, (n - o) * halfday) if o >= 0 else 0 for n, o in old_and_news]
     return ret
 
 
