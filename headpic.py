@@ -7,6 +7,7 @@ import numpy as np
 import requests
 
 import paths
+from download_header import download_header as download
 from library.file import fast_import, log
 
 good_color_dir = paths.byk + "data\\好颜色.csv"
@@ -25,8 +26,6 @@ api_url = "https://api.bilibili.com/x/web-interface/card?mid="
 
 # blacklist
 blacklist = ["吴织亚切大忽悠"]
-
-from download_header import download_header as download
 
 dheader = download(good_color, export_dir)
 download_header = dheader.download_header

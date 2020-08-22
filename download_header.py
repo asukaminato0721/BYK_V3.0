@@ -29,9 +29,9 @@ class download_header:
         else:
             mean = ImageStat.Stat(image).mean
             if len(mean) == 1:
-                darker = [round(0.9 * mean[0])]
+                darker = (round(0.9 * mean[0]))
             else:
-                darker = [round(0.9 * i) for i in mean]
+                darker = (round(0.9 * i) for i in mean)
             color = '0x{:02X}{:02X}{:02X}'.format(*darker)
         return color
 
