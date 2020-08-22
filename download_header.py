@@ -1,7 +1,9 @@
 from io import BytesIO
+from os.path import join
 
 import requests
 from PIL import Image, ImageStat
+
 
 # good_color = {}
 # export_dir = 'D:/'
@@ -14,17 +16,20 @@ class download_header:
 
     def download_header(self, uid, face_link):
         image = Image.open(BytesIO(requests.get(face_link).content))
-        width = image.size[0]
-        height = image.size[1]
+        width, height = image.size
         if min(width, height) > 240:
             image = image.resize((240, round(height * 240 / width)))
-        image.save(self.export_dir + str(uid) + '.png')
+        image.save(join(self.export_dir, str(uid) + '.png'))
+        color = self.get_color(image, uid)
+        return color
+
+    def get_color(self, image, uid):
         if uid in self.good_color:
             color = self.good_color[uid]
         else:
             mean = ImageStat.Stat(image).mean
             if len(mean) == 1:
-                darker = [round(0.9 * mean[0]) for i in mean]
+                darker = [round(0.9 * mean[0])]
             else:
                 darker = [round(0.9 * i) for i in mean]
             color = '0x{:02X}{:02X}{:02X}'.format(*darker)
