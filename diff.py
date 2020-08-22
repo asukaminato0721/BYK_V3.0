@@ -54,10 +54,10 @@ def calu_vidview(new: int, old: int, old_old: int) -> List[int]:
     参数分别为当天 一天或半天前 一天半前数据。
     若当天无数据 参数为零
     """
-    if new - old > 0 and old > 0:
+    if new - old > 0 and old >= 0:
         # 新老数据不同 且老数据不是零
         ret = new - old
-    elif old_old > 0:
+    elif old_old >= 0:
         # 老数据是零 更老数据不是零
         ret = new - old_old
     else:
@@ -100,7 +100,7 @@ def line_diff(mid, new, old, old_old, halfday: int) -> None or List:
     # 4-5列：粉丝 视频数 的变化情况
     ret_fans = point_diff(new, old, ["fans", "vidcount"], halfday, )
     # 6列 播放数 要特殊处理
-    ret_vidview: List[int] = calu_vidview(*[int(_.get("vidview", 0)) for _ in (new, old, old_old)])
+    ret_vidview: List[int] = calu_vidview(*[int(_.get("vidview", -1)) for _ in (new, old, old_old)])
     # 7列 旧名字 如果一样就是0
     ret_old_names = [0 if new["name"] == old.get("name", "") else old.get("name", 0)]
     # 8-12列 关注 专栏阅读 等级 充电 点赞
@@ -190,7 +190,7 @@ if __name__ == "__main__":
     14-15个数据点（一周）->40s,43s.45s
     约60个数据点（一月）->172s,179s，300s
     """
-    diff("2020082111", "2020082111",
+    diff("2020082123", "2020082123",
          target_dir=r"D:\OneDrive\LiWorkshop\BiliYuekan_Remake\temp""\\")
 
     import time
