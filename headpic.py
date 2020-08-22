@@ -26,10 +26,10 @@ api_url = "https://api.bilibili.com/x/web-interface/card?mid="
 # blacklist
 blacklist = ["吴织亚切大忽悠"]
 
-import download_header
+from download_header import download_header as download
 
-download_header.initialize(good_color, export_dir)
-from download_header import download_header
+dheader = download(good_color, export_dir)
+download_header = dheader.download_header
 
 
 def download_header_mma(uid, face_link):
