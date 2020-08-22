@@ -2,6 +2,7 @@
 import json
 import os
 import re
+from typing import Callable
 
 import numpy as np
 import requests
@@ -20,15 +21,12 @@ with open(paths.logoff_dir, encoding='UTF-8') as f:
 
 # 输出目标路径
 export_dir = paths.anime
-
+download_header: Callable[["uid", "facelink"], "color"] = download(good_color, export_dir).download_header
 # api地址
 api_url = "https://api.bilibili.com/x/web-interface/card?mid="
 
 # blacklist
 blacklist = ["吴织亚切大忽悠"]
-
-dheader = download(good_color, export_dir)
-download_header = dheader.download_header
 
 
 def download_header_mma(uid, face_link):
@@ -65,7 +63,7 @@ def crawl(up_data, index):
     return ret
 
 
-def get_ret_s(udata, uid):
+def get_ret_s(udata, uid) -> list:
     # 读api获取用户信息
     content = get_content(uid)
     # up名称，要做比较多的判断处理 单独写函数
