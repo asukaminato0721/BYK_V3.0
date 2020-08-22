@@ -27,7 +27,12 @@ api_url = "https://api.bilibili.com/x/web-interface/card?mid="
 blacklist = ["吴织亚切大忽悠"]
 
 
-def download_header(uid, face_link):
+import download_header
+download_header.initialize(good_color, export_dir)
+from download_header import download_header
+
+
+def download_header_mma(uid, face_link):
     command = fr"wolframscript -file headpic.wls {uid} {face_link} {export_dir}"
     with os.popen(command, 'r') as f:
         color = f.read().replace("\n", "")
