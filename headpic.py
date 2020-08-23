@@ -26,13 +26,14 @@ api_url = "https://api.bilibili.com/x/web-interface/card?mid="
 # blacklist
 blacklist = ["吴织亚切大忽悠"]
 
-
 import download_header
+
 download_header.initialize(good_color, export_dir)
 from download_header import download_header
 
 
 def download_header_mma(uid, face_link):
+    """已弃用"""
     command = fr"wolframscript -file headpic.wls {uid} {face_link} {export_dir}"
     with os.popen(command, 'r') as f:
         color = f.read().replace("\n", "")
@@ -107,7 +108,7 @@ def headpic(inter_data):
     head = inter_data[0]
     ret_head = [head[0], "", ""] + head[1:]
     # 表体
-    ret_body = [crawl(up_data, index) for up_data, index in zip(inter_data[1:], range(1, len(inter_data)))]
+    ret_body = [crawl(up_data, index) for index, up_data in enumerate(inter_data[1:], 1)]
     print()  # 换行
     # 转置
     ret = zip(ret_head, *ret_body)
