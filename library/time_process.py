@@ -100,7 +100,7 @@ def smart_choice_startend(month=time.localtime()[2]):
 
     :return: t_start,t_end,m_end
     """
-    year_s = str(time.localtime()[0] - (1 if month == 1 else 0))
+    year_s = str(time.localtime()[0] - int(month == 1))
     month_s = ("0" if month < 10 else "") + str((month - 1) % 12 + 1)
 
     t_start = halfdayago(year_s + month_s + "0111")
